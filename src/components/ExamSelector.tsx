@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { exams } from '@/data/exams';
 import { supabase } from '@/lib/supabase';
+import { useLanguage } from '@/lib/LanguageContext';
 
 const LOCAL_KEY = 'paathsala_chosen_exams';
 
@@ -12,6 +13,7 @@ export default function ExamSelector({
 }: {
   onChange?: (ids: string[]) => void;
 }) {
+  const { t } = useLanguage();
   const [selected, setSelected] = useState<string[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
 
@@ -56,7 +58,7 @@ export default function ExamSelector({
   return (
     <div>
       <h2 className="font-display text-xl mb-3" style={{ color: 'var(--indigo)' }}>
-        Choose your exams
+        {t('chooseExams')}
       </h2>
       <div className="flex flex-wrap gap-2">
         {exams.map((exam) => {

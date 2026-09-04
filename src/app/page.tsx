@@ -3,12 +3,14 @@
 import { useState } from 'react';
 import Hero3D from '@/components/Hero3D';
 import ExamSelector from '@/components/ExamSelector';
+import { useLanguage } from '@/lib/LanguageContext';
 import { getUpcomingDeadlines } from '@/data/deadlines';
 import { exams } from '@/data/exams';
 
 export default function Home() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const upcoming = getUpcomingDeadlines(selectedIds);
+  const { t } = useLanguage();
 
   return (
     <main>
@@ -29,7 +31,7 @@ export default function Home() {
             पाठशाला
           </h1>
           <p className="font-display" style={{ fontSize: '20px', maxWidth: '480px' }}>
-            One school. Every exam. Your language.
+            {t('tagline')}
           </p>
         </div>
       </section>
@@ -41,7 +43,7 @@ export default function Home() {
       {selectedIds.length > 0 && (
         <section style={{ padding: '0 48px 64px' }}>
           <h2 className="font-display text-xl mb-3" style={{ color: 'var(--indigo)' }}>
-            Upcoming deadlines
+            {t('upcomingDeadlines')}
           </h2>
           {upcoming.length === 0 ? (
             <p style={{ color: '#5B665F', fontSize: '14px' }}>No upcoming deadlines for your chosen exams.</p>

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Header from '@/components/Header';
+import { LanguageProvider } from '@/lib/LanguageContext';
 import { Space_Grotesk, Khand, Work_Sans } from 'next/font/google';
 import './globals.css';
 
@@ -36,8 +37,10 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${khand.variable} ${workSans.variable}`}
       >
+      <LanguageProvider>
       <Header />  
         {children}
+      </LanguageProvider>  
       </body>
     </html>
   );

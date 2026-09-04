@@ -3,19 +3,19 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { useLanguage } from '@/lib/LanguageContext';
 
 export default function Header() {
   const [userId, setUserId] = useState<string | null>(null);
+  const { locale, setLocale, t } = useLanguage();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUserId(session?.user.id ?? null);
     });
-
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUserId(session?.user.id ?? null);
     });
-
     return () => listener.subscription.unsubscribe();
   }, []);
 
@@ -30,23 +30,29 @@ export default function Header() {
         background: 'var(--paper)',
       }}
     >
-      <Link href="/" className="font-dev" style={{ fontSize: '22px', color: 'var(--marigold-deep, var(--marigold))', textDecoration: 'none' }}>
+      <Link href="/" className="font-dev" style={{ fontSize: '22px', color: 'var(--marigold)', textDecoration: 'none' }}>
         पाठशाला
       </Link>
 
       <nav style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
         <Link href="/" style={{ fontSize: '14px', color: 'var(--indigo)', textDecoration: 'none' }}>
-          Home
+          {t('home')}
         </Link>
         {userId ? (
           <Link href="/profile" style={{ fontSize: '14px', color: 'var(--indigo)', textDecoration: 'none' }}>
-            Profile
+            {t('profile')}
           </Link>
         ) : (
           <Link href="/login" style={{ fontSize: '14px', color: 'var(--indigo)', textDecoration: 'none' }}>
-            Log in
+            {t('login')}
           </Link>
         )}
+        <button
+          onClick={() => setLocale(locale === 'en' ? 'hi' : 'en')}
+          style={{ fontSize: '13px', border: '1px solid var(--indigo)', color: 'var(--indigo)', background: 'none', padding: '4px 10px', cursor: 'pointer' }}
+        >
+          {locale === 'en' ? 'हिंदी' : 'English'}
+        </button>
       </nav>
     </header>
   );

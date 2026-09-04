@@ -1,0 +1,118 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
+
+type Resource = {
+  id: string;
+  exam_id: string;
+  title: string;
+  link_url: string;
+  link_type: string;
+  status: string;
+};
+
+export default function AdminPage() {
+  const router = useRouter();
+  const [allowed, setAllowed] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [pending, setPending] = useState<Resource[]>([]);
+
+  useEffect(() => {
+    async function check() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push('/login');
+        return;
+      }
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', session.user.id)
+        .single();
+
+      if (!profile?.is_admin) {
+        setLoading(false);
+        return;
+      }
+      setAllowed(true);
+      loadPending();
+      setLoading(false);
+    }
+    check();
+  }, [router]);
+
+  async function loadPending() {
+    const { data, error } = await supabase
+      .from('resources')
+      .select('*')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: true });
+    if (error) {
+      console.error('loadPending error:', error);
+      return;
+    }
+    setPending(data ?? []);
+  }
+
+  async function publish(id: string) {
+    const { error } = await supabase.from('resources').update({ status: 'published' }).eq('id', id);
+    if (error) {
+      console.error('publish error:', error);
+      return;
+    }
+    setPending((prev) => prev.filter((r) => r.id !== id));
+  }
+
+  async function reject(id: string) {
+    const { error } = await supabase.from('resources').delete().eq('id', id);
+    if (error) {
+      console.error('reject error:', error);
+      return;
+    }
+    setPending((prev) => prev.filter((r) => r.id !== id));
+  }
+
+  if (loading) return <main style={{ padding: '48px' }}>Loading...</main>;
+  if (!allowed) return <main style={{ padding: '48px' }}>Not authorized.</main>;
+
+  return (
+    <main style={{ padding: '48px', maxWidth: '720px' }}>
+      <h1 className="font-display text-2xl mb-6" style={{ color: 'var(--indigo)' }}>
+        Pending Resources
+      </h1>
+
+      {pending.length === 0 ? (
+        <p style={{ color: '#5B665F', fontSize: '14px' }}>Nothing waiting for review.</p>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {pending.map((r) => (
+            <div key={r.id} style={{ border: '1px solid #E4DCC6', padding: '14px 16px' }}>
+              <p style={{ fontSize: '14px', color: 'var(--ink)', marginBottom: '4px' }}>
+                <strong>{r.title}</strong> — {r.exam_id} ({r.link_type})
+              </p>
+              <a href={r.link_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '13px', color: 'var(--indigo)' }}>
+                {r.link_url}
+              </a>
+              <div className="flex gap-2" style={{ marginTop: '10px' }}>
+                <button
+                  onClick={() => publish(r.id)}
+                  style={{ padding: '6px 14px', background: 'var(--leaf)', color: 'white', border: 'none', fontSize: '13px' }}
+                >
+                  Publish
+                </button>
+                <button
+                  onClick={() => reject(r.id)}
+                  style={{ padding: '6px 14px', background: 'var(--kumkum)', color: 'white', border: 'none', fontSize: '13px' }}
+                >
+                  Reject
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </main>
+  );
+}
