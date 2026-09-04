@@ -71,6 +71,12 @@ export default function ExamDashboard() {
 >
   Forum
 </Link>
+<Link
+  href={`/exams/${examId}/resources`}
+  style={{ padding: '10px 20px', border: '1px solid var(--indigo)', color: 'var(--indigo)' }}
+>
+  Resources
+</Link>
       </div>
 
       <h2 className="font-display text-lg mb-2" style={{ color: 'var(--indigo)' }}>
