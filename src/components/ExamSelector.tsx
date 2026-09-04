@@ -1,16 +1,56 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { exams } from '@/data/exams';
+import { supabase } from '@/lib/supabase';
 
-export default function ExamSelector() {
+const LOCAL_KEY = 'paathsala_chosen_exams';
+
+export default function ExamSelector({
+  onChange,
+}: {
+  onChange?: (ids: string[]) => void;
+}) {
   const [selected, setSelected] = useState<string[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
 
-  function toggle(id: string) {
-    setSelected((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    );
+  useEffect(() => {
+    async function load() {
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (session) {
+        setUserId(session.user.id);
+        const { data } = await supabase
+          .from('profiles')
+          .select('chosen_exams')
+          .eq('id', session.user.id)
+          .single();
+        const ids = data?.chosen_exams ?? [];
+        setSelected(ids);
+        onChange?.(ids);
+      } else {
+        const raw = localStorage.getItem(LOCAL_KEY);
+        const ids = raw ? JSON.parse(raw) : [];
+        setSelected(ids);
+        onChange?.(ids);
+      }
+    }
+    load();
+  }, [onChange]);
+
+  async function toggle(id: string) {
+    const updated = selected.includes(id)
+      ? selected.filter((x) => x !== id)
+      : [...selected, id];
+    setSelected(updated);
+    onChange?.(updated);
+
+    if (userId) {
+      await supabase.from('profiles').update({ chosen_exams: updated }).eq('id', userId);
+    } else {
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(updated));
+    }
   }
 
   return (
