@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 import { exams } from '@/data/exams';
 
@@ -21,18 +22,27 @@ export default function ExamSelector() {
         {exams.map((exam) => {
           const isSelected = selected.includes(exam.id);
           return (
-            <button
-              key={exam.id}
-              onClick={() => toggle(exam.id)}
-              className="px-4 py-2 text-sm border transition-colors"
-              style={{
-                borderColor: isSelected ? 'var(--marigold)' : '#E4DCC6',
-                background: isSelected ? 'var(--marigold)' : 'var(--paper)',
-                color: isSelected ? 'var(--ink)' : 'var(--indigo)',
-              }}
-            >
-              {exam.name}
-            </button>
+            <div key={exam.id} className="flex flex-col items-start gap-1">
+              <button
+                onClick={() => toggle(exam.id)}
+                className="px-4 py-2 text-sm border transition-colors"
+                style={{
+                  borderColor: isSelected ? 'var(--marigold)' : '#E4DCC6',
+                  background: isSelected ? 'var(--marigold)' : 'var(--paper)',
+                  color: isSelected ? 'var(--ink)' : 'var(--indigo)',
+                }}
+              >
+                {exam.name}
+              </button>
+              {isSelected && (
+                <Link
+                  href={`/exams/${exam.id}`}
+                  style={{ fontSize: '12px', color: 'var(--indigo)', textDecoration: 'underline' }}
+                >
+                  Open dashboard
+                </Link>
+              )}
+            </div>
           );
         })}
       </div>
