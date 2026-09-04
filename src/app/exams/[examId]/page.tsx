@@ -59,6 +59,18 @@ export default function ExamDashboard() {
         >
           Mock test
         </Link>
+        <Link
+  href={`/exams/${examId}/notes`}
+  style={{ padding: '10px 20px', border: '1px solid var(--indigo)', color: 'var(--indigo)' }}
+>
+  Notes
+</Link>
+         <Link
+  href={`/exams/${examId}/forum`}
+  style={{ padding: '10px 20px', border: '1px solid var(--indigo)', color: 'var(--indigo)' }}
+>
+  Forum
+</Link>
       </div>
 
       <h2 className="font-display text-lg mb-2" style={{ color: 'var(--indigo)' }}>

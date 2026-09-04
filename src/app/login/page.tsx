@@ -17,18 +17,26 @@ export default function LoginPage() {
     setError('');
 
     if (mode === 'signup') {
-      const { data, error } = await supabase.auth.signUp({ email, password });
-      if (error) return setError(error.message);
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({ email, password });
+      if (signUpError) return setError(signUpError.message);
+      if (!signUpData.user) return setError('Signup succeeded but no user returned.');
 
-      if (data.user) {
-        await supabase.from('profiles').insert({
-          id: data.user.id,
-          display_name: name || 'Student',
-        });
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (!sessionData.session) {
+        return setError('Email confirmation is required — check Supabase settings.');
+      }
+
+      const { error: insertError } = await supabase.from('profiles').insert({
+        id: signUpData.user.id,
+        display_name: name || 'Student',
+      });
+      if (insertError) {
+        console.error('profile insert error:', insertError);
+        return setError(`Signed up, but profile creation failed: ${insertError.message}`);
       }
     } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) return setError(error.message);
+      const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
+      if (loginError) return setError(loginError.message);
     }
 
     router.push('/profile');

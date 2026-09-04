@@ -16,16 +16,27 @@ export async function getProfile(userId: string) {
     .select('*')
     .eq('id', userId)
     .single();
-  if (error) return null;
+  if (error) {
+    console.error('getProfile error:', {
+      message: error.message,
+      code: error.code,
+      details: error.details,
+      hint: error.hint,
+    });
+    return null;
+  }
   return data;
 }
 
 export async function completeToday(userId: string) {
   const profile = await getProfile(userId);
-  if (!profile) return null;
+  if (!profile) {
+    console.error('completeToday: no profile found for', userId);
+    return null;
+  }
 
   const today = todayStr();
-  if (profile.last_completed === today) return profile; // already done today
+  if (profile.last_completed === today) return profile;
 
   let newCount: number;
   if (!profile.last_completed) {
@@ -42,7 +53,15 @@ export async function completeToday(userId: string) {
     .select()
     .single();
 
-  if (error) return null;
+  if (error) {
+    console.error('completeToday update error:', {
+      message: error.message,
+      code: error.code,
+      details: error.details,
+      hint: error.hint,
+    });
+    return null;
+  }
   return data;
 }
 
