@@ -24,3 +24,26 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+:root {
+  --ink: #14231F;
+  --paper: #F6F1E3;
+  --marigold: #E5A13B;
+  --indigo: #223A5E;
+  --kumkum: #A6303A;
+  --leaf: #2F7A56;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-work-sans), sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-space-grotesk), sans-serif;
+}
+
+.font-dev {
+  font-family: var(--font-khand), sans-serif;
+}
