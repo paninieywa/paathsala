@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { exams } from '@/data/exams';
 import { getSyllabus } from '@/data/syllabus';
@@ -35,9 +36,30 @@ export default function ExamDashboard() {
       <h1 className="font-display text-2xl mb-2" style={{ color: 'var(--indigo)' }}>
         {exam.name}
       </h1>
-      <p style={{ color: '#5B665F', fontSize: '14px', marginBottom: '24px' }}>
+      <p style={{ color: '#5B665F', fontSize: '14px', marginBottom: '16px' }}>
         {exam.category}
       </p>
+
+      <div className="flex gap-2" style={{ marginBottom: '32px' }}>
+        <Link
+          href={`/exams/${examId}/quiz`}
+          style={{ padding: '10px 20px', background: 'var(--marigold)', color: 'var(--ink)' }}
+        >
+          Today&apos;s quiz
+        </Link>
+        <Link
+          href={`/exams/${examId}/flashcards`}
+          style={{ padding: '10px 20px', border: '1px solid var(--indigo)', color: 'var(--indigo)' }}
+        >
+          Flashcards
+        </Link>
+        <Link
+           href={`/exams/${examId}/mock/mock1`}
+           style={{ padding: '10px 20px', border: '1px solid var(--indigo)', color: 'var(--indigo)' }}
+        >
+          Mock test
+        </Link>
+      </div>
 
       <h2 className="font-display text-lg mb-2" style={{ color: 'var(--indigo)' }}>
         Syllabus ({progress}% complete)
@@ -63,15 +85,6 @@ export default function ExamDashboard() {
           ))}
         </ul>
       )}
-
-      <div style={{ borderTop: '1px solid #E4DCC6', paddingTop: '20px' }}>
-        <h2 className="font-display text-lg mb-2" style={{ color: 'var(--indigo)' }}>
-          Notes &amp; PYQs
-        </h2>
-        <p style={{ color: '#5B665F', fontSize: '14px' }}>
-          Coming in the next phase — notes library and previous-year questions.
-        </p>
-      </div>
     </main>
   );
 }
