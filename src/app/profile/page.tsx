@@ -1,39 +1,71 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getStreak, completeToday, getBadges } from '@/lib/streak';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
+import { getProfile, completeToday, getBadges } from '@/lib/streak';
 
 export default function ProfilePage() {
+  const router = useRouter();
+  const [userId, setUserId] = useState<string | null>(null);
+  const [displayName, setDisplayName] = useState('');
   const [streak, setStreak] = useState(0);
   const [doneToday, setDoneToday] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const data = getStreak();
-    setStreak(data.count);
-    setDoneToday(data.lastCompleted === new Date().toISOString().slice(0, 10));
-  }, []);
+    async function load() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push('/login');
+        return;
+      }
+      setUserId(session.user.id);
 
-  function handleComplete() {
-    const data = completeToday();
-    setStreak(data.count);
-    setDoneToday(true);
+      const profile = await getProfile(session.user.id);
+      if (profile) {
+        setDisplayName(profile.display_name);
+        setStreak(profile.streak_count);
+        setDoneToday(profile.last_completed === new Date().toISOString().slice(0, 10));
+      }
+      setLoading(false);
+    }
+    load();
+  }, [router]);
+
+  async function handleComplete() {
+    if (!userId) return;
+    const updated = await completeToday(userId);
+    if (updated) {
+      setStreak(updated.streak_count);
+      setDoneToday(true);
+    }
   }
+
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    router.push('/login');
+  }
+
+  if (loading) return <main style={{ padding: '48px' }}>Loading...</main>;
 
   const badges = getBadges(streak);
 
   return (
     <main style={{ padding: '48px', maxWidth: '640px' }}>
-      <h1 className="font-display text-2xl mb-6" style={{ color: 'var(--indigo)' }}>
-        Your Profile
-      </h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h1 className="font-display text-2xl mb-6" style={{ color: 'var(--indigo)' }}>
+          {displayName}
+        </h1>
+        <button
+          onClick={handleLogout}
+          style={{ fontSize: '13px', color: 'var(--indigo)', textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer' }}
+        >
+          Log out
+        </button>
+      </div>
 
-      <div
-        style={{
-          border: '1px solid #E4DCC6',
-          padding: '24px',
-          marginBottom: '24px',
-        }}
-      >
+      <div style={{ border: '1px solid #E4DCC6', padding: '24px', marginBottom: '24px' }}>
         <p className="font-display" style={{ fontSize: '32px', color: 'var(--marigold)' }}>
           {streak} day{streak === 1 ? '' : 's'}
         </p>
@@ -59,25 +91,22 @@ export default function ProfilePage() {
         Badges
       </h2>
       {badges.length === 0 ? (
-        <p style={{ color: '#5B665F', fontSize: '14px' }}>
-          No badges yet — a 3-day streak earns your first one.
-        </p>
+        <p style={{ color: '#5B665F', fontSize: '14px' }}>No badges yet — a 3-day streak earns your first one.</p>
       ) : (
         <div className="flex flex-wrap gap-2">
           {badges.map((b) => (
-            <span
-              key={b}
-              style={{
-                border: '1px solid var(--marigold)',
-                padding: '6px 12px',
-                fontSize: '13px',
-                color: 'var(--indigo)',
-              }}
-            >
+            <span key={b} style={{ border: '1px solid var(--marigold)', padding: '6px 12px', fontSize: '13px', color: 'var(--indigo)' }}>
               {b}
             </span>
           ))}
         </div>
+      )}
+
+      {userId && (
+        <p style={{ marginTop: '24px', fontSize: '13px', color: '#5B665F' }}>
+          Share your public profile:{' '}
+          <code style={{ background: '#EFE9D8', padding: '2px 6px' }}>/profile/{userId}</code>
+        </p>
       )}
     </main>
   );

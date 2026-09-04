@@ -1,18 +1,26 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { getQuestions } from '@/data/questions';
+import { supabase } from '@/lib/supabase';
 import { completeToday } from '@/lib/streak';
 
 export default function QuizPage() {
   const params = useParams<{ examId: string }>();
   const questions = getQuestions(params.examId);
 
+  const [userId, setUserId] = useState<string | null>(null);
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [finished, setFinished] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUserId(session?.user.id ?? null);
+    });
+  }, []);
 
   if (questions.length === 0) {
     return <main style={{ padding: '48px' }}>No quiz available for this exam yet.</main>;
@@ -26,12 +34,12 @@ export default function QuizPage() {
     if (optionIndex === current.correctIndex) setScore((s) => s + 1);
   }
 
-  function handleNext() {
+  async function handleNext() {
     if (index + 1 < questions.length) {
       setIndex((i) => i + 1);
       setSelected(null);
     } else {
-      completeToday();
+      if (userId) await completeToday(userId);
       setFinished(true);
     }
   }
@@ -46,7 +54,7 @@ export default function QuizPage() {
           You scored {score} out of {questions.length}.
         </p>
         <p style={{ color: '#5B665F', fontSize: '14px', marginTop: '12px' }}>
-          Today&apos;s streak has been recorded.
+          {userId ? "Today's streak has been recorded." : 'Log in to save your streak next time.'}
         </p>
       </main>
     );
@@ -73,11 +81,7 @@ export default function QuizPage() {
                 padding: '12px 16px',
                 textAlign: 'left',
                 border: '1px solid #E4DCC6',
-                background: isCorrect
-                  ? '#DCEEE3'
-                  : isWrongPick
-                  ? '#F3DADA'
-                  : 'var(--paper)',
+                background: isCorrect ? '#DCEEE3' : isWrongPick ? '#F3DADA' : 'var(--paper)',
                 color: 'var(--ink)',
                 cursor: selected === null ? 'pointer' : 'default',
               }}
@@ -91,13 +95,7 @@ export default function QuizPage() {
       {selected !== null && (
         <button
           onClick={handleNext}
-          style={{
-            marginTop: '20px',
-            padding: '10px 20px',
-            background: 'var(--marigold)',
-            color: 'var(--ink)',
-            border: 'none',
-          }}
+          style={{ marginTop: '20px', padding: '10px 20px', background: 'var(--marigold)', color: 'var(--ink)', border: 'none' }}
         >
           {index + 1 < questions.length ? 'Next question' : 'Finish quiz'}
         </button>

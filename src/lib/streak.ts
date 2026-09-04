@@ -1,9 +1,4 @@
-const KEY = 'paathsala_streak';
-
-type StreakData = {
-  count: number;
-  lastCompleted: string | null; // ISO date, no time
-};
+import { supabase } from './supabase';
 
 function todayStr(): string {
   return new Date().toISOString().slice(0, 10);
@@ -15,27 +10,39 @@ function daysBetween(a: string, b: string): number {
   return Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
 }
 
-export function getStreak(): StreakData {
-  if (typeof window === 'undefined') return { count: 0, lastCompleted: null };
-  const raw = localStorage.getItem(KEY);
-  return raw ? JSON.parse(raw) : { count: 0, lastCompleted: null };
+export async function getProfile(userId: string) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
+    .single();
+  if (error) return null;
+  return data;
 }
 
-export function completeToday(): StreakData {
-  const data = getStreak();
+export async function completeToday(userId: string) {
+  const profile = await getProfile(userId);
+  if (!profile) return null;
+
   const today = todayStr();
+  if (profile.last_completed === today) return profile; // already done today
 
-  if (data.lastCompleted === today) return data; // already done today
-
-  if (!data.lastCompleted) {
-    data.count = 1;
+  let newCount: number;
+  if (!profile.last_completed) {
+    newCount = 1;
   } else {
-    const gap = daysBetween(data.lastCompleted, today);
-    data.count = gap === 1 ? data.count + 1 : 1; // reset if streak broken
+    const gap = daysBetween(profile.last_completed, today);
+    newCount = gap === 1 ? profile.streak_count + 1 : 1;
   }
 
-  data.lastCompleted = today;
-  localStorage.setItem(KEY, JSON.stringify(data));
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ streak_count: newCount, last_completed: today })
+    .eq('id', userId)
+    .select()
+    .single();
+
+  if (error) return null;
   return data;
 }
 
