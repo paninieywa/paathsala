@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { exams } from '@/data/exams';
 import { getSyllabus } from '@/data/syllabus';
 import { getCompleted, toggleTopic } from '@/lib/syllabusProgress';
+import { mockTestsByExam } from '@/data/mockTests';
 
 export default function ExamDashboard() {
   const params = useParams<{ examId: string }>();
@@ -31,6 +32,8 @@ export default function ExamDashboard() {
     ? Math.round((completed.length / topics.length) * 100)
     : 0;
 
+  const mockTests = mockTestsByExam[examId] ?? [];
+
   return (
     <main style={{ padding: '48px', maxWidth: '640px' }}>
       <h1 className="font-display text-2xl mb-2" style={{ color: 'var(--indigo)' }}>
@@ -40,7 +43,7 @@ export default function ExamDashboard() {
         {exam.category}
       </p>
 
-      <div className="flex gap-2" style={{ marginBottom: '32px' }}>
+      <div className="flex flex-wrap gap-2" style={{ marginBottom: '32px' }}>
         <Link
           href={`/exams/${examId}/quiz`}
           style={{ padding: '10px 20px', background: 'var(--marigold)', color: 'var(--ink)' }}
@@ -54,36 +57,51 @@ export default function ExamDashboard() {
           Flashcards
         </Link>
         <Link
-           href={`/exams/${examId}/mock/mock1`}
-           style={{ padding: '10px 20px', border: '1px solid var(--indigo)', color: 'var(--indigo)' }}
+          href={`/exams/${examId}/notes`}
+          style={{ padding: '10px 20px', border: '1px solid var(--indigo)', color: 'var(--indigo)' }}
         >
-          Mock test
+          Notes
         </Link>
         <Link
-  href={`/exams/${examId}/notes`}
-  style={{ padding: '10px 20px', border: '1px solid var(--indigo)', color: 'var(--indigo)' }}
->
-  Notes
-</Link>
-         <Link
-  href={`/exams/${examId}/forum`}
-  style={{ padding: '10px 20px', border: '1px solid var(--indigo)', color: 'var(--indigo)' }}
->
-  Forum
-</Link>
-<Link
-  href={`/exams/${examId}/resources`}
-  style={{ padding: '10px 20px', border: '1px solid var(--indigo)', color: 'var(--indigo)' }}
->
-  Resources
-</Link>
-<Link
-  href={`/exams/${examId}/analytics`}
-  style={{ padding: '10px 20px', border: '1px solid var(--indigo)', color: 'var(--indigo)' }}
->
-  Analytics
-</Link>
+          href={`/exams/${examId}/forum`}
+          style={{ padding: '10px 20px', border: '1px solid var(--indigo)', color: 'var(--indigo)' }}
+        >
+          Forum
+        </Link>
+        <Link
+          href={`/exams/${examId}/resources`}
+          style={{ padding: '10px 20px', border: '1px solid var(--indigo)', color: 'var(--indigo)' }}
+        >
+          Resources
+        </Link>
+        <Link
+          href={`/exams/${examId}/analytics`}
+          style={{ padding: '10px 20px', border: '1px solid var(--indigo)', color: 'var(--indigo)' }}
+        >
+          Analytics
+        </Link>
       </div>
+
+      <h2 className="font-display text-lg mb-2" style={{ color: 'var(--indigo)' }}>
+        Mock Tests
+      </h2>
+      {mockTests.length === 0 ? (
+        <p style={{ color: '#5B665F', fontSize: '14px', marginBottom: '32px' }}>
+          No mock tests available yet.
+        </p>
+      ) : (
+        <div className="flex flex-col gap-2" style={{ marginBottom: '32px' }}>
+          {mockTests.map((m) => (
+            <Link
+              key={m.id}
+              href={`/exams/${examId}/mock/${m.id}`}
+              style={{ padding: '10px 16px', border: '1px solid var(--indigo)', color: 'var(--indigo)', textDecoration: 'none' }}
+            >
+              {m.name} ({m.durationMins} min)
+            </Link>
+          ))}
+        </div>
+      )}
 
       <h2 className="font-display text-lg mb-2" style={{ color: 'var(--indigo)' }}>
         Syllabus ({progress}% complete)

@@ -16,6 +16,18 @@ export const syllabusByExam: Record<string, SyllabusTopic[]> = {
     { id: 'botany', name: 'Botany' },
     { id: 'zoology', name: 'Zoology' },
   ],
+  'jee-main': [
+    { id: 'physics', name: 'Physics' },
+    { id: 'chemistry', name: 'Chemistry' },
+    { id: 'maths', name: 'Mathematics' },
+  ],
+  'upsc-cse': [
+    { id: 'polity', name: 'Indian Polity' },
+    { id: 'history', name: 'Indian History' },
+    { id: 'geography', name: 'Geography' },
+    { id: 'economy', name: 'Indian Economy' },
+    { id: 'ethics', name: 'Ethics & Integrity' },
+  ],
 };
 
 export function getSyllabus(examId: string): SyllabusTopic[] {

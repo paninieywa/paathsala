@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 
 type Post = {
@@ -10,6 +11,7 @@ type Post = {
   upvotes: number;
   created_at: string;
   author_id: string;
+  profiles: { display_name: string } | null;
 };
 
 export default function ForumPage() {
@@ -32,14 +34,14 @@ export default function ForumPage() {
   async function loadPosts() {
     const { data, error } = await supabase
       .from('forum_posts')
-      .select('*')
+      .select('*, profiles(display_name)')
       .eq('exam_id', examId)
       .order('created_at', { ascending: false });
     if (error) {
       console.error('loadPosts error:', error);
       return;
     }
-    setPosts(data ?? []);
+    setPosts((data as unknown as Post[]) ?? []);
   }
 
   async function handlePost(e: React.FormEvent) {
@@ -86,22 +88,22 @@ export default function ForumPage() {
   }
 
   async function handleReport(postId: string, authorId: string) {
-  if (!userId) return setError('Log in to report a post.');
-  if (userId === authorId) return setError("You can't report your own post.");
-  const reason = window.prompt('Why are you reporting this post?');
-  if (!reason) return;
+    if (!userId) return setError('Log in to report a post.');
+    if (userId === authorId) return setError("You can't report your own post.");
+    const reason = window.prompt('Why are you reporting this post?');
+    if (!reason) return;
 
-  const { error } = await supabase.from('forum_reports').insert({
-    post_id: postId,
-    reported_by: userId,
-    reason,
-  });
-  if (error) {
-    console.error('report error:', error);
-    return;
+    const { error } = await supabase.from('forum_reports').insert({
+      post_id: postId,
+      reported_by: userId,
+      reason,
+    });
+    if (error) {
+      console.error('report error:', error);
+      return;
+    }
+    alert('Thanks — this has been reported for review.');
   }
-  alert('Thanks — this has been reported for review.');
-}
 
   return (
     <main style={{ padding: '48px', maxWidth: '640px' }}>
@@ -132,6 +134,14 @@ export default function ForumPage() {
         )}
         {posts.map((post) => (
           <div key={post.id} style={{ border: '1px solid #E4DCC6', padding: '14px 16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+              <Link href={`/profile/${post.author_id}`} style={{ fontSize: '12.5px', color: 'var(--indigo)', textDecoration: 'none', fontWeight: 600 }}>
+                {post.profiles?.display_name ?? 'Student'}
+              </Link>
+              <span style={{ fontSize: '12px', color: '#5B665F' }}>
+                {new Date(post.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+              </span>
+            </div>
             <p style={{ color: 'var(--ink)', fontSize: '14.5px', marginBottom: '10px' }}>{post.body}</p>
             <div className="flex gap-2">
               <button
