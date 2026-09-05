@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { getQuestions } from '@/data/questions';
 import { getMockTest } from '@/data/mockTests';
 import { saveAttempt, TopicResult } from '@/lib/mockAttempts';
+import { supabase } from '@/lib/supabase';
 import { completeToday } from '@/lib/streak';
 
 export default function MockTestPage() {
@@ -14,10 +15,17 @@ export default function MockTestPage() {
   const mock = getMockTest(examId, mockId);
   const questions = getQuestions(examId);
 
+  const [userId, setUserId] = useState<string | null>(null);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [secondsLeft, setSecondsLeft] = useState((mock?.durationMins ?? 0) * 60);
   const [submitted, setSubmitted] = useState(false);
   const [result, setResult] = useState<{ score: number; breakdown: TopicResult[] } | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUserId(session?.user.id ?? null);
+    });
+  }, []);
 
   useEffect(() => {
     if (submitted || secondsLeft <= 0) return;
@@ -38,7 +46,7 @@ export default function MockTestPage() {
     setAnswers((prev) => ({ ...prev, [questionId]: optionIndex }));
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     let score = 0;
     const topicMap: Record<string, TopicResult> = {};
 
@@ -67,7 +75,7 @@ export default function MockTestPage() {
       topicBreakdown: breakdown,
       completedAt: new Date().toISOString(),
     });
-    completeToday();
+    if (userId) await completeToday(userId);
     setSubmitted(true);
   }
 
