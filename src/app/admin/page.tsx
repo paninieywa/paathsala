@@ -13,11 +13,19 @@ type Resource = {
   status: string;
 };
 
+type Report = {
+  id: string;
+  post_id: string;
+  reason: string;
+  created_at: string;
+};
+
 export default function AdminPage() {
   const router = useRouter();
   const [allowed, setAllowed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [pending, setPending] = useState<Resource[]>([]);
+  const [reports, setReports] = useState<Report[]>([]);
 
   useEffect(() => {
     async function check() {
@@ -37,7 +45,8 @@ export default function AdminPage() {
         return;
       }
       setAllowed(true);
-      loadPending();
+      await loadPending();
+      await loadReports();
       setLoading(false);
     }
     check();
@@ -54,6 +63,18 @@ export default function AdminPage() {
       return;
     }
     setPending(data ?? []);
+  }
+
+  async function loadReports() {
+    const { data, error } = await supabase
+      .from('forum_reports')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) {
+      console.error('loadReports error:', error);
+      return;
+    }
+    setReports(data ?? []);
   }
 
   async function publish(id: string) {
@@ -109,6 +130,22 @@ export default function AdminPage() {
                   Reject
                 </button>
               </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <h2 className="font-display text-lg mt-8 mb-3" style={{ color: 'var(--indigo)' }}>
+        Reported Forum Posts
+      </h2>
+      {reports.length === 0 ? (
+        <p style={{ color: '#5B665F', fontSize: '14px' }}>No reports right now.</p>
+      ) : (
+        <div className="flex flex-col gap-2">
+          {reports.map((r) => (
+            <div key={r.id} style={{ border: '1px solid var(--kumkum)', padding: '12px 16px', fontSize: '13px' }}>
+              <p>Post ID: {r.post_id}</p>
+              <p style={{ color: '#5B665F' }}>Reason: {r.reason}</p>
             </div>
           ))}
         </div>

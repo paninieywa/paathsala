@@ -36,12 +36,7 @@ export default function ForumPage() {
       .eq('exam_id', examId)
       .order('created_at', { ascending: false });
     if (error) {
-      console.error('loadPosts error:', {
-        message: error.message,
-        code: error.code,
-        details: error.details,
-        hint: error.hint,
-      });
+      console.error('loadPosts error:', error);
       return;
     }
     setPosts(data ?? []);
@@ -59,12 +54,7 @@ export default function ForumPage() {
       body: newPost.trim(),
     });
     if (error) {
-      console.error('post insert error:', {
-        message: error.message,
-        code: error.code,
-        details: error.details,
-        hint: error.hint,
-      });
+      console.error('post insert error:', error);
       return setError('Could not post — try again.');
     }
     setNewPost('');
@@ -80,12 +70,7 @@ export default function ForumPage() {
       user_id: userId,
     });
     if (error) {
-      console.error('upvote error:', {
-        message: error.message,
-        code: error.code,
-        details: error.details,
-        hint: error.hint,
-      });
+      console.error('upvote error:', error);
       return;
     }
 
@@ -99,6 +84,24 @@ export default function ForumPage() {
       .update({ upvotes: posts.find((p) => p.id === postId)!.upvotes + 1 })
       .eq('id', postId);
   }
+
+  async function handleReport(postId: string, authorId: string) {
+  if (!userId) return setError('Log in to report a post.');
+  if (userId === authorId) return setError("You can't report your own post.");
+  const reason = window.prompt('Why are you reporting this post?');
+  if (!reason) return;
+
+  const { error } = await supabase.from('forum_reports').insert({
+    post_id: postId,
+    reported_by: userId,
+    reason,
+  });
+  if (error) {
+    console.error('report error:', error);
+    return;
+  }
+  alert('Thanks — this has been reported for review.');
+}
 
   return (
     <main style={{ padding: '48px', maxWidth: '640px' }}>
@@ -130,20 +133,35 @@ export default function ForumPage() {
         {posts.map((post) => (
           <div key={post.id} style={{ border: '1px solid #E4DCC6', padding: '14px 16px' }}>
             <p style={{ color: 'var(--ink)', fontSize: '14.5px', marginBottom: '10px' }}>{post.body}</p>
-            <button
-              onClick={() => handleUpvote(post.id)}
-              disabled={votedIds.includes(post.id)}
-              style={{
-                fontSize: '13px',
-                background: 'none',
-                border: '1px solid var(--indigo)',
-                color: 'var(--indigo)',
-                padding: '4px 10px',
-                cursor: votedIds.includes(post.id) ? 'default' : 'pointer',
-              }}
-            >
-              ▲ {post.upvotes}
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleUpvote(post.id)}
+                disabled={votedIds.includes(post.id)}
+                style={{
+                  fontSize: '13px',
+                  background: 'none',
+                  border: '1px solid var(--indigo)',
+                  color: 'var(--indigo)',
+                  padding: '4px 10px',
+                  cursor: votedIds.includes(post.id) ? 'default' : 'pointer',
+                }}
+              >
+                ▲ {post.upvotes}
+              </button>
+              <button
+                onClick={() => handleReport(post.id, post.author_id)}
+                style={{
+                  fontSize: '13px',
+                  background: 'none',
+                  border: '1px solid var(--kumkum)',
+                  color: 'var(--kumkum)',
+                  padding: '4px 10px',
+                  cursor: 'pointer',
+                }}
+              >
+                Report
+              </button>
+            </div>
           </div>
         ))}
       </div>

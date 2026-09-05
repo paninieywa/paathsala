@@ -86,7 +86,18 @@ export default function ProfilePage() {
           {doneToday ? "Today's quiz done" : "Complete today's quiz"}
         </button>
       </div>
-
+      <button
+  onClick={async () => {
+    if (!userId) return;
+    const { data } = await supabase.from('profiles').select('show_on_leaderboard').eq('id', userId).single();
+    const newValue = !data?.show_on_leaderboard;
+    await supabase.from('profiles').update({ show_on_leaderboard: newValue }).eq('id', userId);
+    alert(newValue ? 'You are now on the leaderboard.' : 'Removed from leaderboard.');
+  }}
+  style={{ fontSize: '13px', color: 'var(--indigo)', textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer', marginBottom: '24px' }}
+>
+  Toggle leaderboard visibility
+</button>
       <h2 className="font-display text-lg mb-3" style={{ color: 'var(--indigo)' }}>
         Badges
       </h2>

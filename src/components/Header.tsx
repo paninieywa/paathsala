@@ -38,6 +38,9 @@ export default function Header() {
         <Link href="/" style={{ fontSize: '14px', color: 'var(--indigo)', textDecoration: 'none' }}>
           {t('home')}
         </Link>
+        <Link href="/leaderboard" style={{ fontSize: '14px', color: 'var(--indigo)', textDecoration: 'none' }}>
+          Leaderboard
+        </Link>
         {userId ? (
           <Link href="/profile" style={{ fontSize: '14px', color: 'var(--indigo)', textDecoration: 'none' }}>
             {t('profile')}
