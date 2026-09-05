@@ -5,12 +5,14 @@ import Hero3D from '@/components/Hero3D';
 import ExamSelector from '@/components/ExamSelector';
 import { useLanguage } from '@/lib/LanguageContext';
 import { getUpcomingDeadlines } from '@/data/deadlines';
+import { getFactsForExams } from '@/data/facts';
 import { exams } from '@/data/exams';
 
 export default function Home() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const upcoming = getUpcomingDeadlines(selectedIds);
   const { t } = useLanguage();
+  const relevantFacts = getFactsForExams(selectedIds);
 
   return (
     <main>
@@ -66,6 +68,21 @@ export default function Home() {
           )}
         </section>
       )}
+
+      {selectedIds.length > 0 && relevantFacts.length > 0 && (
+  <section style={{ padding: '0 48px 64px' }}>
+    <h2 className="font-display text-xl mb-3" style={{ color: 'var(--indigo)' }}>
+      Facts &amp; tricks for you
+    </h2>
+    <div className="flex flex-col gap-2">
+      {relevantFacts.map((f, i) => (
+        <div key={i} style={{ borderLeft: '3px solid var(--marigold)', padding: '10px 16px', background: 'var(--white, #FFFDF8)' }}>
+          <p style={{ fontSize: '14px', color: 'var(--ink)' }}>{f.text}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+)}
     </main>
   );
 }
