@@ -63,6 +63,12 @@ export default function ExamDashboard() {
           Notes
         </Link>
         <Link
+  href={`/exams/${examId}/current-affairs`}
+  style={{ padding: '10px 20px', border: '1px solid var(--indigo)', color: 'var(--indigo)' }}
+>
+  Current Affairs
+</Link>
+        <Link
           href={`/exams/${examId}/forum`}
           style={{ padding: '10px 20px', border: '1px solid var(--indigo)', color: 'var(--indigo)' }}
         >
@@ -74,6 +80,12 @@ export default function ExamDashboard() {
         >
           Resources
         </Link>
+        <Link
+  href={`/exams/${examId}/cutoff`}
+  style={{ padding: '10px 20px', border: '1px solid var(--indigo)', color: 'var(--indigo)' }}
+>
+  Cutoff Trends
+</Link>
         <Link
           href={`/exams/${examId}/analytics`}
           style={{ padding: '10px 20px', border: '1px solid var(--indigo)', color: 'var(--indigo)' }}

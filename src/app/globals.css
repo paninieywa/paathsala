@@ -47,3 +47,29 @@ body {
 .font-dev {
   font-family: var(--font-khand), sans-serif;
 }
+
+/* Responsive spacing for all page content */
+@media (max-width: 640px) {
+  main {
+    padding: 20px !important;
+  }
+  header {
+    padding: 12px 16px !important;
+  }
+  .hero-title {
+    font-size: 34px !important;
+  }
+  .hero-tagline {
+    font-size: 15px !important;
+    max-width: 100% !important;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  main {
+    padding: 32px !important;
+  }
+  .hero-title {
+    font-size: 44px !important;
+  }
+}

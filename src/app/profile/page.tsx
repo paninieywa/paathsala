@@ -9,8 +9,11 @@ export default function ProfilePage() {
   const router = useRouter();
   const [userId, setUserId] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState('');
+  const [editingName, setEditingName] = useState(false);
+  const [nameInput, setNameInput] = useState('');
   const [streak, setStreak] = useState(0);
   const [doneToday, setDoneToday] = useState(false);
+  const [onLeaderboard, setOnLeaderboard] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,7 +28,9 @@ export default function ProfilePage() {
       const profile = await getProfile(session.user.id);
       if (profile) {
         setDisplayName(profile.display_name);
+        setNameInput(profile.display_name);
         setStreak(profile.streak_count);
+        setOnLeaderboard(profile.show_on_leaderboard ?? false);
         setDoneToday(profile.last_completed === new Date().toISOString().slice(0, 10));
       }
       setLoading(false);
@@ -42,6 +47,20 @@ export default function ProfilePage() {
     }
   }
 
+  async function saveName() {
+    if (!userId || !nameInput.trim()) return;
+    await supabase.from('profiles').update({ display_name: nameInput.trim() }).eq('id', userId);
+    setDisplayName(nameInput.trim());
+    setEditingName(false);
+  }
+
+  async function toggleLeaderboard() {
+    if (!userId) return;
+    const newValue = !onLeaderboard;
+    await supabase.from('profiles').update({ show_on_leaderboard: newValue }).eq('id', userId);
+    setOnLeaderboard(newValue);
+  }
+
   async function handleLogout() {
     await supabase.auth.signOut();
     router.push('/login');
@@ -52,11 +71,30 @@ export default function ProfilePage() {
   const badges = getBadges(streak);
 
   return (
-    <main style={{ padding: '48px', maxWidth: '640px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1 className="font-display text-2xl mb-6" style={{ color: 'var(--indigo)' }}>
-          {displayName}
-        </h1>
+    <main style={{ padding: 'clamp(20px, 5vw, 48px)', maxWidth: '640px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '8px' }}>
+        {editingName ? (
+          <div className="flex gap-2" style={{ alignItems: 'center' }}>
+            <input
+              value={nameInput}
+              onChange={(e) => setNameInput(e.target.value)}
+              style={{ padding: '8px', border: '1px solid #E4DCC6', fontFamily: 'var(--font-space-grotesk)', fontSize: '18px' }}
+            />
+            <button onClick={saveName} style={{ padding: '8px 14px', background: 'var(--marigold)', border: 'none', color: 'var(--ink)', fontSize: '13px' }}>
+              Save
+            </button>
+          </div>
+        ) : (
+          <h1 className="font-display text-2xl" style={{ color: 'var(--indigo)' }}>
+            {displayName}{' '}
+            <button
+              onClick={() => setEditingName(true)}
+              style={{ fontSize: '13px', color: 'var(--indigo)', textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer' }}
+            >
+              Edit
+            </button>
+          </h1>
+        )}
         <button
           onClick={handleLogout}
           style={{ fontSize: '13px', color: 'var(--indigo)', textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer' }}
@@ -86,18 +124,14 @@ export default function ProfilePage() {
           {doneToday ? "Today's quiz done" : "Complete today's quiz"}
         </button>
       </div>
+
       <button
-  onClick={async () => {
-    if (!userId) return;
-    const { data } = await supabase.from('profiles').select('show_on_leaderboard').eq('id', userId).single();
-    const newValue = !data?.show_on_leaderboard;
-    await supabase.from('profiles').update({ show_on_leaderboard: newValue }).eq('id', userId);
-    alert(newValue ? 'You are now on the leaderboard.' : 'Removed from leaderboard.');
-  }}
-  style={{ fontSize: '13px', color: 'var(--indigo)', textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer', marginBottom: '24px' }}
->
-  Toggle leaderboard visibility
-</button>
+        onClick={toggleLeaderboard}
+        style={{ fontSize: '13px', color: 'var(--indigo)', textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer', marginBottom: '24px' }}
+      >
+        {onLeaderboard ? 'Remove me from the leaderboard' : 'Show me on the leaderboard'}
+      </button>
+
       <h2 className="font-display text-lg mb-3" style={{ color: 'var(--indigo)' }}>
         Badges
       </h2>
@@ -114,9 +148,8 @@ export default function ProfilePage() {
       )}
 
       {userId && (
-        <p style={{ marginTop: '24px', fontSize: '13px', color: '#5B665F' }}>
-          Share your public profile:{' '}
-          <code style={{ background: '#EFE9D8', padding: '2px 6px' }}>/profile/{userId}</code>
+        <p style={{ marginTop: '24px', fontSize: '13px', color: '#5B665F', wordBreak: 'break-all' }}>
+          Share your public profile: <code style={{ background: '#EFE9D8', padding: '2px 6px' }}>/profile/{userId}</code>
         </p>
       )}
     </main>

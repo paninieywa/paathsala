@@ -29,10 +29,10 @@ export default function Home() {
             pointerEvents: 'none',
           }}
         >
-          <h1 className="font-dev" style={{ fontSize: '56px', color: 'var(--marigold)' }}>
+          <h1 className="font-dev hero-title" style={{ fontSize: '56px', color: 'var(--marigold)' }}>
             पाठशाला
           </h1>
-          <p className="font-display" style={{ fontSize: '20px', maxWidth: '480px' }}>
+          <p className="font-display hero-tagline" style={{ fontSize: '20px', maxWidth: '480px' }}>
             {t('tagline')}
           </p>
         </div>
