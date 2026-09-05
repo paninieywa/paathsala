@@ -21,31 +21,6 @@ export default function MockTestPage() {
   const [submitted, setSubmitted] = useState(false);
   const [result, setResult] = useState<{ score: number; breakdown: TopicResult[] } | null>(null);
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUserId(session?.user.id ?? null);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (submitted || secondsLeft <= 0) return;
-    const timer = setInterval(() => setSecondsLeft((s) => s - 1), 1000);
-    return () => clearInterval(timer);
-  }, [submitted, secondsLeft]);
-
-  useEffect(() => {
-    if (secondsLeft === 0 && !submitted) handleSubmit();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [secondsLeft]);
-
-  if (!mock) return <main style={{ padding: '48px' }}>Mock test not found.</main>;
-  if (questions.length === 0) return <main style={{ padding: '48px' }}>No questions available yet.</main>;
-
-  function selectAnswer(questionId: string, optionIndex: number) {
-    if (submitted) return;
-    setAnswers((prev) => ({ ...prev, [questionId]: optionIndex }));
-  }
-
   async function handleSubmit() {
     let score = 0;
     const topicMap: Record<string, TopicResult> = {};
@@ -77,6 +52,33 @@ export default function MockTestPage() {
     });
     if (userId) await completeToday(userId);
     setSubmitted(true);
+  }
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUserId(session?.user.id ?? null);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (submitted || secondsLeft <= 0) return;
+    const timer = setInterval(() => setSecondsLeft((s) => s - 1), 1000);
+    return () => clearInterval(timer);
+  }, [submitted, secondsLeft]);
+
+  useEffect(() => {
+  if (secondsLeft !== 0 || submitted) return;
+  const timeout = setTimeout(() => handleSubmit(), 0);
+  return () => clearTimeout(timeout);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [secondsLeft]);
+
+  if (!mock) return <main style={{ padding: '48px' }}>Mock test not found.</main>;
+  if (questions.length === 0) return <main style={{ padding: '48px' }}>No questions available yet.</main>;
+
+  function selectAnswer(questionId: string, optionIndex: number) {
+    if (submitted) return;
+    setAnswers((prev) => ({ ...prev, [questionId]: optionIndex }));
   }
 
   if (submitted && result) {

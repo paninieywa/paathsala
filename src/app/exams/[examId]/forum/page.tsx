@@ -29,6 +29,7 @@ export default function ForumPage() {
       setUserId(session?.user.id ?? null);
     });
     loadPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [examId]);
 
   async function loadPosts() {

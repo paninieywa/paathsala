@@ -23,6 +23,7 @@ export default function AnalyticsPage() {
   useEffect(() => {
     if (!mock) return;
     const attempts = getAttempts(examId, 'mock1');
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAttemptCount(attempts.length);
 
     const map: Record<string, TopicAggregate> = {};

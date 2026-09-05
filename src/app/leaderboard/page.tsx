@@ -41,7 +41,7 @@ export default function LeaderboardPage() {
         Leaderboard
       </h1>
       <p style={{ color: '#5B665F', fontSize: '13px', marginBottom: '24px' }}>
-        Shows only students who've opted in from their profile.
+        Shows only students who&apos;ve opted in from their profile.
       </p>
 
       {rows.length === 0 ? (

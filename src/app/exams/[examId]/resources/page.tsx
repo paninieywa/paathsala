@@ -36,6 +36,7 @@ export default function ResourcesPage() {
       setUserId(session?.user.id ?? null);
     });
     loadResources();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [examId]);
 
   async function loadResources() {
@@ -112,7 +113,7 @@ export default function ResourcesPage() {
           {submitting ? 'Sharing...' : 'Share resource'}
         </button>
         <p style={{ fontSize: '12px', color: '#5B665F', marginTop: '8px' }}>
-          Make sure your link's sharing setting is "Anyone with the link." Reviewed before appearing for others.
+          Make sure your link&apos;s sharing setting is &quot;Anyone with the link.&quot; Reviewed before appearing for others.
         </p>
       </form>
 

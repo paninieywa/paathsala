@@ -17,6 +17,7 @@ export default function ExamDashboard() {
   const [completed, setCompleted] = useState<string[]>([]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCompleted(getCompleted(examId));
   }, [examId]);
 

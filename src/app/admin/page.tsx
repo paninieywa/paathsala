@@ -27,31 +27,6 @@ export default function AdminPage() {
   const [pending, setPending] = useState<Resource[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
 
-  useEffect(() => {
-    async function check() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        router.push('/login');
-        return;
-      }
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('is_admin')
-        .eq('id', session.user.id)
-        .single();
-
-      if (!profile?.is_admin) {
-        setLoading(false);
-        return;
-      }
-      setAllowed(true);
-      await loadPending();
-      await loadReports();
-      setLoading(false);
-    }
-    check();
-  }, [router]);
-
   async function loadPending() {
     const { data, error } = await supabase
       .from('resources')
@@ -76,6 +51,31 @@ export default function AdminPage() {
     }
     setReports(data ?? []);
   }
+
+  useEffect(() => {
+    async function check() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push('/login');
+        return;
+      }
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', session.user.id)
+        .single();
+
+      if (!profile?.is_admin) {
+        setLoading(false);
+        return;
+      }
+      setAllowed(true);
+      await loadPending();
+      await loadReports();
+      setLoading(false);
+    }
+    check();
+  }, [router]);
 
   async function publish(id: string) {
     const { error } = await supabase.from('resources').update({ status: 'published' }).eq('id', id);
