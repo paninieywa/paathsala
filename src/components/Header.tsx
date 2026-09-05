@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useLanguage } from '@/lib/LanguageContext';
+import { localeNames, Locale } from '@/lib/i18n';
 
 export default function Header() {
   const [userId, setUserId] = useState<string | null>(null);
@@ -28,13 +29,15 @@ export default function Header() {
         padding: '16px 32px',
         borderBottom: '1px solid #E4DCC6',
         background: 'var(--paper)',
+        flexWrap: 'wrap',
+        gap: '10px',
       }}
     >
       <Link href="/" className="font-dev" style={{ fontSize: '22px', color: 'var(--marigold)', textDecoration: 'none' }}>
         पाठशाला
       </Link>
 
-      <nav style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+      <nav style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
         <Link href="/" style={{ fontSize: '14px', color: 'var(--indigo)', textDecoration: 'none' }}>
           {t('home')}
         </Link>
@@ -50,12 +53,15 @@ export default function Header() {
             {t('login')}
           </Link>
         )}
-        <button
-          onClick={() => setLocale(locale === 'en' ? 'hi' : 'en')}
-          style={{ fontSize: '13px', border: '1px solid var(--indigo)', color: 'var(--indigo)', background: 'none', padding: '4px 10px', cursor: 'pointer' }}
+        <select
+          value={locale}
+          onChange={(e) => setLocale(e.target.value as Locale)}
+          style={{ fontSize: '13px', border: '1px solid var(--indigo)', color: 'var(--indigo)', background: 'var(--paper)', padding: '4px 8px' }}
         >
-          {locale === 'en' ? 'हिंदी' : 'English'}
-        </button>
+          {Object.entries(localeNames).map(([code, name]) => (
+            <option key={code} value={code}>{name}</option>
+          ))}
+        </select>
       </nav>
     </header>
   );

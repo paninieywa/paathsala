@@ -48,7 +48,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }
 
   function t(key: TranslationKey): string {
-    return translations[locale][key];
+    return translations[locale][key] ?? translations.en[key];
   }
 
   return (

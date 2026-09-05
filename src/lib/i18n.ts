@@ -1,6 +1,19 @@
-export type Locale = 'en' | 'hi';
+export type Locale = 'en' | 'hi' | 'ta' | 'te' | 'kn' | 'ml';
 
-export const translations = {
+export const localeNames: Record<Locale, string> = {
+  en: 'English',
+  hi: 'हिंदी',
+  ta: 'தமிழ்',
+  te: 'తెలుగు',
+  kn: 'ಕನ್ನಡ',
+  ml: 'മലയാളം',
+};
+
+// Languages that have been checked for accuracy.
+// ta/te/kn/ml are first-draft translations pending native-speaker review.
+export const reviewedLocales: Locale[] = ['en', 'hi'];
+
+export const translations: Record<Locale, Record<string, string>> = {
   en: {
     home: 'Home',
     profile: 'Profile',
@@ -13,6 +26,11 @@ export const translations = {
     completeQuiz: "Complete today's quiz",
     quizDone: "Today's quiz done",
     badges: 'Badges',
+    footerAbout: 'Paathsala is a free, multilingual home for exam preparation — built so every student can learn in their own language, without paying for what should be freely available.',
+    ourWork: 'Our other projects',
+    builtBy: 'Built by VRX — Made in India',
+    privacyPolicy: 'Privacy Policy',
+    termsOfService: 'Terms of Service',
   },
   hi: {
     home: 'होम',
@@ -21,12 +39,89 @@ export const translations = {
     logout: 'लॉग आउट',
     tagline: 'एक स्कूल। हर परीक्षा। आपकी भाषा।',
     chooseExams: 'अपनी परीक्षाएं चुनें',
-    upcomingDeadlines: 'आगामी समय सीमाएं',
+    upcomingDeadlines: 'आगामी अंतिम तिथियां',
     currentStreak: 'वर्तमान स्ट्रीक',
     completeQuiz: 'आज का क्विज़ पूरा करें',
     quizDone: 'आज का क्विज़ पूरा हुआ',
     badges: 'बैज',
+    footerAbout: 'पाठशाला एक निःशुल्क, बहुभाषी मंच है जहाँ हर छात्र अपनी भाषा में परीक्षा की तैयारी कर सकता है — बिना उस चीज़ के लिए पैसे चुकाए जो मुफ़्त में मिलनी चाहिए।',
+    ourWork: 'हमारी अन्य परियोजनाएं',
+    builtBy: 'VRX द्वारा निर्मित — भारत में बना',
+    privacyPolicy: 'गोपनीयता नीति',
+    termsOfService: 'सेवा की शर्तें',
   },
-} as const;
+  ta: {
+    home: 'முகப்பு',
+    profile: 'சுயவிவரம்',
+    login: 'உள்நுழை',
+    logout: 'வெளியேறு',
+    tagline: 'ஒரே பள்ளி. ஒவ்வொரு தேர்வும். உங்கள் மொழியில்.',
+    chooseExams: 'உங்கள் தேர்வுகளைத் தேர்ந்தெடுக்கவும்',
+    upcomingDeadlines: 'வரவிருக்கும் காலக்கெடுக்கள்',
+    currentStreak: 'தற்போதைய தொடர்',
+    completeQuiz: 'இன்றைய வினாடி வினாவை முடிக்கவும்',
+    quizDone: 'இன்றைய வினாடி வினா முடிந்தது',
+    badges: 'பேட்ஜ்கள்',
+    footerAbout: 'பாத்ஷாலா ஒரு இலவச, பலமொழி தேர்வு தயாரிப்பு தளம் — ஒவ்வொரு மாணவரும் தங்கள் சொந்த மொழியில் கற்க வேண்டும் என்ற நோக்கத்துடன் உருவாக்கப்பட்டது.',
+    ourWork: 'எங்கள் மற்ற திட்டங்கள்',
+    builtBy: 'VRX ஆல் உருவாக்கப்பட்டது — இந்தியாவில் தயாரிக்கப்பட்டது',
+    privacyPolicy: 'தனியுரிமைக் கொள்கை',
+    termsOfService: 'சேவை விதிமுறைகள்',
+  },
+  te: {
+    home: 'హోమ్',
+    profile: 'ప్రొఫైల్',
+    login: 'లాగిన్',
+    logout: 'లాగ్ అవుట్',
+    tagline: 'ఒకే బడి. ప్రతి పరీక్ష. మీ భాషలో.',
+    chooseExams: 'మీ పరీక్షలను ఎంచుకోండి',
+    upcomingDeadlines: 'రాబోయే గడువులు',
+    currentStreak: 'ప్రస్తుత స్ట్రీక్',
+    completeQuiz: 'ఈరోజు క్విజ్ పూర్తి చేయండి',
+    quizDone: 'ఈరోజు క్విజ్ పూర్తయింది',
+    badges: 'బ్యాడ్జ్‌లు',
+    footerAbout: 'పాఠశాల అనేది ఉచిత, బహుభాషా పరీక్షా తయారీ వేదిక — ప్రతి విద్యార్థి తన సొంత భాషలో నేర్చుకోవాలనే లక్ష్యంతో నిర్మించబడింది.',
+    ourWork: 'మా ఇతర ప్రాజెక్ట్‌లు',
+    builtBy: 'VRX చే నిర్మించబడింది — భారతదేశంలో తయారు చేయబడింది',
+    privacyPolicy: 'గోప్యతా విధానం',
+    termsOfService: 'సేవా నిబంధనలు',
+  },
+  kn: {
+    home: 'ಮುಖಪುಟ',
+    profile: 'ಪ್ರೊಫೈಲ್',
+    login: 'ಲಾಗಿನ್',
+    logout: 'ಲಾಗ್ ಔಟ್',
+    tagline: 'ಒಂದೇ ಶಾಲೆ. ಪ್ರತಿ ಪರೀಕ್ಷೆ. ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ.',
+    chooseExams: 'ನಿಮ್ಮ ಪರೀಕ್ಷೆಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ',
+    upcomingDeadlines: 'ಮುಂಬರುವ ಗಡುವುಗಳು',
+    currentStreak: 'ಪ್ರಸ್ತುತ ಸ್ಟ್ರೀಕ್',
+    completeQuiz: 'ಇಂದಿನ ಕ್ವಿಜ್ ಪೂರ್ಣಗೊಳಿಸಿ',
+    quizDone: 'ಇಂದಿನ ಕ್ವಿಜ್ ಪೂರ್ಣಗೊಂಡಿದೆ',
+    badges: 'ಬ್ಯಾಡ್ಜ್‌ಗಳು',
+    footerAbout: 'ಪಾಠಶಾಲಾ ಒಂದು ಉಚಿತ, ಬಹುಭಾಷಾ ಪರೀಕ್ಷಾ ತಯಾರಿ ವೇದಿಕೆ — ಪ್ರತಿ ವಿದ್ಯಾರ್ಥಿ ತಮ್ಮ ಸ್ವಂತ ಭಾಷೆಯಲ್ಲಿ ಕಲಿಯಬೇಕು ಎಂಬ ಗುರಿಯೊಂದಿಗೆ ನಿರ್ಮಿಸಲಾಗಿದೆ.',
+    ourWork: 'ನಮ್ಮ ಇತರ ಯೋಜನೆಗಳು',
+    builtBy: 'VRX ನಿಂದ ನಿರ್ಮಿಸಲ್ಪಟ್ಟಿದೆ — ಭಾರತದಲ್ಲಿ ತಯಾರಿಸಲಾಗಿದೆ',
+    privacyPolicy: 'ಗೌಪ್ಯತಾ ನೀತಿ',
+    termsOfService: 'ಸೇವಾ ನಿಯಮಗಳು',
+  },
+  ml: {
+    home: 'ഹോം',
+    profile: 'പ്രൊഫൈൽ',
+    login: 'ലോഗിൻ',
+    logout: 'ലോഗ്ഔട്ട്',
+    tagline: 'ഒരു സ്കൂൾ. എല്ലാ പരീക്ഷയും. നിങ്ങളുടെ ഭാഷയിൽ.',
+    chooseExams: 'നിങ്ങളുടെ പരീക്ഷകൾ തിരഞ്ഞെടുക്കുക',
+    upcomingDeadlines: 'വരാനിരിക്കുന്ന അവസാന തീയതികൾ',
+    currentStreak: 'നിലവിലെ സ്ട്രീക്ക്',
+    completeQuiz: 'ഇന്നത്തെ ക്വിസ് പൂർത്തിയാക്കുക',
+    quizDone: 'ഇന്നത്തെ ക്വിസ് പൂർത്തിയായി',
+    badges: 'ബാഡ്ജുകൾ',
+    footerAbout: 'പാഠശാല ഒരു സൗജന്യ, ബഹുഭാഷാ പരീക്ഷാ തയ്യാറെടുപ്പ് വേദിയാണ് — ഓരോ വിദ്യാർത്ഥിക്കും സ്വന്തം ഭാഷയിൽ പഠിക്കാൻ കഴിയണം എന്ന ലക്ഷ്യത്തോടെ നിർമ്മിച്ചത്.',
+    ourWork: 'ഞങ്ങളുടെ മറ്റ് പദ്ധതികൾ',
+    builtBy: 'VRX നിർമ്മിച്ചത് — ഇന്ത്യയിൽ നിർമ്മിച്ചത്',
+    privacyPolicy: 'സ്വകാര്യതാ നയം',
+    termsOfService: 'സേവന നിബന്ധനകൾ',
+  },
+};
 
 export type TranslationKey = keyof typeof translations.en;
