@@ -7,6 +7,7 @@ import { getMockTest } from '@/data/mockTests';
 import { saveAttempt, TopicResult } from '@/lib/mockAttempts';
 import { supabase } from '@/lib/supabase';
 import { completeToday } from '@/lib/streak';
+import { scoreMockTest } from '@/lib/scoreMockTest';
 
 export default function MockTestPage() {
   const params = useParams<{ examId: string; mockId: string }>();
@@ -21,38 +22,25 @@ export default function MockTestPage() {
   const [submitted, setSubmitted] = useState(false);
   const [result, setResult] = useState<{ score: number; breakdown: TopicResult[] } | null>(null);
 
-  async function handleSubmit() {
-    let score = 0;
-    const topicMap: Record<string, TopicResult> = {};
+ async function handleSubmit() {
+  const answeredQuestions = questions.map((q) => ({
+    topicId: q.topicId,
+    correctIndex: q.correctIndex,
+    pickedIndex: answers[q.id],
+  }));
 
-    for (const q of questions) {
-      if (!topicMap[q.topicId]) {
-        topicMap[q.topicId] = { topicId: q.topicId, correct: 0, wrong: 0, skipped: 0 };
-      }
-      const picked = answers[q.id];
+  const { score, breakdown } = scoreMockTest(answeredQuestions, mock!.negativeMarking);
 
-      if (picked === undefined) {
-        topicMap[q.topicId].skipped += 1;
-      } else if (picked === q.correctIndex) {
-        topicMap[q.topicId].correct += 1;
-        score += 1;
-      } else {
-        topicMap[q.topicId].wrong += 1;
-        score -= mock!.negativeMarking;
-      }
-    }
-
-    const breakdown = Object.values(topicMap);
-    setResult({ score, breakdown });
-    saveAttempt(examId, mockId, {
-      score,
-      totalQuestions: questions.length,
-      topicBreakdown: breakdown,
-      completedAt: new Date().toISOString(),
-    });
-    if (userId) await completeToday(userId);
-    setSubmitted(true);
-  }
+  setResult({ score, breakdown });
+  saveAttempt(examId, mockId, {
+    score,
+    totalQuestions: questions.length,
+    topicBreakdown: breakdown,
+    completedAt: new Date().toISOString(),
+  });
+  if (userId) await completeToday(userId);
+  setSubmitted(true);
+}
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
