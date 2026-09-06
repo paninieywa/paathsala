@@ -53,7 +53,7 @@ export default function ExamDashboard() {
   return (
     <main style={{ padding: 'clamp(20px, 5vw, 48px)', maxWidth: '820px' }}>
       <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginBottom: '8px' }}>
-        <div style={{ width: '52px', height: '52px', background: 'var(--ink)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <div style={{ width: '52px', height: '52px', background: 'var(--hero-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
           {Icon && <Icon size={26} color="var(--marigold)" />}
         </div>
         <div>

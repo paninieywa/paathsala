@@ -6,7 +6,6 @@ import { exams } from '@/data/exams';
 import { examMeta } from '@/data/examMeta';
 import { supabase } from '@/lib/supabase';
 import { useLanguage } from '@/lib/LanguageContext';
-import { clearExamLocalData } from '@/lib/examData';
 import { Check } from 'lucide-react';
 
 const LOCAL_KEY = 'paathsala_chosen_exams';
@@ -45,19 +44,9 @@ export default function ExamSelector({
   }, [onChange]);
 
   async function toggle(id: string) {
-  const isDeselecting = selected.includes(id);
+  if (selected.includes(id)) return; // removal now happens only in Profile → Settings
 
-  if (isDeselecting) {
-    const confirmed = window.confirm(
-      'Removing this exam will delete your syllabus progress, flashcard progress, and mock test attempts for it on this device. Continue?'
-    );
-    if (!confirmed) return;
-    clearExamLocalData(id);
-  }
-
-  const updated = isDeselecting
-    ? selected.filter((x) => x !== id)
-    : [...selected, id];
+  const updated = [...selected, id];
   setSelected(updated);
   onChange?.(updated);
 
@@ -101,7 +90,7 @@ export default function ExamSelector({
                   style={{
                     width: '40px',
                     height: '40px',
-                    background: 'var(--ink)',
+                    background: 'var(--hero-bg)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
