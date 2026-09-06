@@ -6,10 +6,12 @@ import { getQuestions } from '@/data/questions';
 import { supabase } from '@/lib/supabase';
 import { completeToday } from '@/lib/streak';
 import Link from 'next/link';
+import { getDailySubset } from '@/lib/dailySubset';
 
 export default function QuizPage() {
   const params = useParams<{ examId: string }>();
-  const questions = getQuestions(params.examId);
+  const allQuestions = getQuestions(params.examId);
+  const questions = getDailySubset(allQuestions, 10, params.examId);
 
   const [userId, setUserId] = useState<string | null>(null);
   const [index, setIndex] = useState(0);

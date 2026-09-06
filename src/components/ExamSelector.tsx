@@ -127,14 +127,22 @@ export default function ExamSelector({
               </p>
 
               {isSelected && (
-                <Link
-                  href={`/exams/${exam.id}`}
-                  onClick={(e) => e.stopPropagation()}
-                  style={{ fontSize: '13px', color: 'var(--indigo)', fontWeight: 600, textDecoration: 'underline' }}
-                >
-                  Open dashboard →
-                </Link>
-              )}
+  <Link
+    href={`/exams/${exam.id}`}
+    onClick={(e) => e.stopPropagation()}
+    style={{
+      display: 'inline-block',
+      fontSize: '13px',
+      fontWeight: 600,
+      color: 'var(--hero-text)',
+      background: 'var(--hero-bg)',
+      padding: '8px 16px',
+      textDecoration: 'none',
+    }}
+  >
+    Start learning →
+  </Link>
+)}
             </div>
           );
         })}

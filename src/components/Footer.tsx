@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import IndiaFlag from './IndiaFlag';
 import { useLanguage } from '@/lib/LanguageContext';
 
 export default function Footer() {
@@ -14,14 +15,14 @@ export default function Footer() {
             <p className="font-dev" style={{ fontSize: '24px', color: 'var(--marigold)', marginBottom: '12px' }}>
               पाठशाला
             </p>
-            <p style={{ fontSize: '13.5px', color: 'vae(--footer-text)', lineHeight: 1.7 }}>
+            <p style={{ fontSize: '13.5px', color: 'var(--footer-text)', lineHeight: 1.7 }}>
               {t('footerAbout')}
             </p>
           </div>
 
           <div style={{ display: 'flex', gap: '48px', flexWrap: 'wrap' }}>
             <div>
-              <p style={{ fontSize: '11.5px', color: 'var(--footer-label', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              <p style={{ fontSize: '11.5px', color: 'var(--footer-label)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                 {t('ourWork')}
               </p>
               <a href="https://jagatmanthan.vercel.app/" target="_blank" rel="noopener noreferrer" style={{ fontSize: '13.5px', color: 'var(--marigold)' }}>जगत्-मन्थन</a>
@@ -41,7 +42,7 @@ export default function Footer() {
 
         <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '20px' }}>
           <p style={{ fontSize: '12.5px', color: 'var(--hero-text)' }}>
-            {t('builtBy')}
+            {t('builtBy')} <IndiaFlag size={16} />
           </p>
         </div>
       </div>

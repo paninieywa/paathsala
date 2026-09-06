@@ -1,14 +1,23 @@
+export type NoteSection = {
+  heading: string;
+  body: string;
+};
+
 export type Note = {
   id: string;
   topicId: string;
   title: string;
-  body: string;
+  body?: string;
+  sections?: NoteSection[];
 };
+
+import { reasoningNotes } from './sharedReasoning';
 
 export const notesByExam: Record<string, Note[]> = {
   'ssc-cgl': [
     { id: 'n1', topicId: 'quant', title: 'Percentage — Quick Method', body: 'To find x% of y, multiply x by y and divide by 100. Example: 15% of 200 = (15 × 200) / 100 = 30.' },
     { id: 'n2', topicId: 'reasoning', title: 'Series Completion Basics', body: 'Look for a consistent pattern: constant difference, constant ratio, or a difference that follows its own pattern.' },
+    ...reasoningNotes,
   ],
   neet: [
     { id: 'n1', topicId: 'physics', title: 'Electric Current — Basics', body: 'Current is the rate of flow of charge, measured in Amperes. I = Q/t.' },
@@ -27,12 +36,15 @@ export const notesByExam: Record<string, Note[]> = {
   ],
   'ibps-po': [
     { id: 'n1', topicId: 'ga-banking', title: 'Key Banking Terms', body: 'NPA: a loan where payments are overdue 90+ days. Repo rate: rate at which RBI lends to banks. Reverse repo: rate at which RBI borrows from banks.' },
+    ...reasoningNotes,
   ],
   'sbi-po': [
     { id: 'n1', topicId: 'quant', title: 'Data Interpretation Tip', body: 'Always read the units and scale on a graph/table before calculating — a common trap is misreading "in lakhs" vs "in thousands".' },
+    ...reasoningNotes,
   ],
   'rrb-ntpc': [
     { id: 'n1', topicId: 'ga-railway', title: 'Indian Railways Basics', body: 'Indian Railways is divided into 17 zones. It is one of the largest railway networks in the world by route length.' },
+    ...reasoningNotes,
   ],
   nda: [
     { id: 'n1', topicId: 'gat', title: 'GAT Preparation Tip', body: 'The General Ability Test covers English plus General Knowledge across Physics, Chemistry, History, Geography, and Current Affairs — breadth matters more than depth.' },

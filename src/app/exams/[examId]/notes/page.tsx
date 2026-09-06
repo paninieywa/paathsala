@@ -40,10 +40,21 @@ export default function NotesPage() {
                 {note.title}
               </button>
               {isOpen && (
-                <div style={{ padding: '0 16px 16px', color: 'var(--ink)', fontSize: '14.5px', lineHeight: 1.6 }}>
-                  {note.body}
-                </div>
-              )}
+  <div style={{ padding: '0 16px 16px' }}>
+    {note.sections ? (
+      note.sections.map((section, i) => (
+        <div key={i} style={{ marginBottom: i < note.sections!.length - 1 ? '16px' : 0 }}>
+          <p className="font-display" style={{ fontSize: '14px', color: 'var(--indigo)', marginBottom: '4px' }}>
+            {section.heading}
+          </p>
+          <p style={{ color: 'var(--ink)', fontSize: '14.5px', lineHeight: 1.6 }}>{section.body}</p>
+        </div>
+      ))
+    ) : (
+      <p style={{ color: 'var(--ink)', fontSize: '14.5px', lineHeight: 1.6 }}>{note.body}</p>
+    )}
+  </div>
+)}
             </div>
           );
         })}
