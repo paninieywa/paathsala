@@ -40,12 +40,12 @@ export default function LeaderboardPage() {
       <h1 className="font-display text-2xl mb-2" style={{ color: 'var(--indigo)' }}>
         Leaderboard
       </h1>
-      <p style={{ color: '#5B665F', fontSize: '13px', marginBottom: '24px' }}>
+      <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: '24px' }}>
         Shows only students who&apos;ve opted in from their profile.
       </p>
 
       {rows.length === 0 ? (
-        <p style={{ color: '#5B665F', fontSize: '14px' }}>No one has joined the leaderboard yet.</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>No one has joined the leaderboard yet.</p>
       ) : (
         <div className="flex flex-col gap-1">
           {rows.map((r, i) => (
@@ -56,7 +56,7 @@ export default function LeaderboardPage() {
                 display: 'flex',
                 justifyContent: 'space-between',
                 padding: '10px 16px',
-                border: '1px solid #E4DCC6',
+                border: '1px solid var(--border)',
                 textDecoration: 'none',
                 color: 'var(--ink)',
               }}

@@ -78,7 +78,7 @@ export default function ProfilePage() {
             <input
               value={nameInput}
               onChange={(e) => setNameInput(e.target.value)}
-              style={{ padding: '8px', border: '1px solid #E4DCC6', fontFamily: 'var(--font-space-grotesk)', fontSize: '18px' }}
+              style={{ padding: '8px', border: '1px solid var(--border)', fontFamily: 'var(--font-space-grotesk)', fontSize: '18px' }}
             />
             <button onClick={saveName} style={{ padding: '8px 14px', background: 'var(--marigold)', border: 'none', color: 'var(--ink)', fontSize: '13px' }}>
               Save
@@ -103,11 +103,11 @@ export default function ProfilePage() {
         </button>
       </div>
 
-      <div style={{ border: '1px solid #E4DCC6', padding: '24px', marginBottom: '24px' }}>
+      <div style={{ border: '1px solid var(--border)', padding: '24px', marginBottom: '24px' }}>
         <p className="font-display" style={{ fontSize: '32px', color: 'var(--marigold)' }}>
           {streak} day{streak === 1 ? '' : 's'}
         </p>
-        <p style={{ color: '#5B665F', fontSize: '14px' }}>Current streak</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Current streak</p>
 
         <button
           onClick={handleComplete}
@@ -115,7 +115,7 @@ export default function ProfilePage() {
           style={{
             marginTop: '16px',
             padding: '10px 20px',
-            background: doneToday ? '#E4DCC6' : 'var(--marigold)',
+            background: doneToday ? 'var(--border)' : 'var(--marigold)',
             color: 'var(--ink)',
             border: 'none',
             cursor: doneToday ? 'not-allowed' : 'pointer',
@@ -136,7 +136,7 @@ export default function ProfilePage() {
         Badges
       </h2>
       {badges.length === 0 ? (
-        <p style={{ color: '#5B665F', fontSize: '14px' }}>No badges yet — a 3-day streak earns your first one.</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>No badges yet — a 3-day streak earns your first one.</p>
       ) : (
         <div className="flex flex-wrap gap-2">
           {badges.map((b) => (
@@ -148,8 +148,8 @@ export default function ProfilePage() {
       )}
 
       {userId && (
-        <p style={{ marginTop: '24px', fontSize: '13px', color: '#5B665F', wordBreak: 'break-all' }}>
-          Share your public profile: <code style={{ background: '#EFE9D8', padding: '2px 6px' }}>/profile/{userId}</code>
+        <p style={{ marginTop: '24px', fontSize: '13px', color: 'var(--text-muted)', wordBreak: 'break-all' }}>
+          Share your public profile: <code style={{ background: 'var(--surface)', border: '1px solid var(--border)', padding: '2px 6px' }}>/profile/{userId}</code>
         </p>
       )}
     </main>

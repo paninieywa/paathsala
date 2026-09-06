@@ -53,7 +53,7 @@ export default function QuizPage() {
         <p style={{ fontSize: '18px', color: 'var(--ink)' }}>
           You scored {score} out of {questions.length}.
         </p>
-        <p style={{ color: '#5B665F', fontSize: '14px', marginTop: '12px' }}>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '12px' }}>
           {userId ? "Today's streak has been recorded." : 'Log in to save your streak next time.'}
         </p>
       </main>
@@ -62,7 +62,7 @@ export default function QuizPage() {
 
   return (
     <main style={{ padding: '48px', maxWidth: '560px' }}>
-      <p style={{ color: '#5B665F', fontSize: '13px', marginBottom: '8px' }}>
+      <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: '8px' }}>
         Question {index + 1} of {questions.length}
       </p>
       <h1 className="font-display text-xl mb-6" style={{ color: 'var(--indigo)' }}>
@@ -80,8 +80,8 @@ export default function QuizPage() {
               style={{
                 padding: '12px 16px',
                 textAlign: 'left',
-                border: '1px solid #E4DCC6',
-                background: isCorrect ? '#DCEEE3' : isWrongPick ? '#F3DADA' : 'var(--paper)',
+                border: '1px solid var(--border)',
+                background: isCorrect ? 'var(--feedback-correct-bg)' : isWrongPick ? 'var(--feedback-wrong-bg)' : 'var(--paper)',
                 color: 'var(--ink)',
                 cursor: selected === null ? 'pointer' : 'default',
               }}

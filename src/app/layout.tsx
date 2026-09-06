@@ -4,6 +4,7 @@ import { LanguageProvider } from '@/lib/LanguageContext';
 import { Space_Grotesk, Khand, Work_Sans } from 'next/font/google';
 import TranslationNotice from '@/components/TranslationNotice';
 import Footer from '@/components/Footer';
+import { ThemeProvider } from '@/lib/ThemeContext';
 import './globals.css';
 
 const spaceGrotesk = Space_Grotesk({
@@ -37,14 +38,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${spaceGrotesk.variable} ${khand.variable} ${workSans.variable}`}
+        className={`${spaceGrotesk.variable} ${khand.variable} ${workSans.variable}`} style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh'}}
       >
-      <LanguageProvider>
-        <Header /> 
-        <TranslationNotice /> 
-        {children}
-        <Footer />
-      </LanguageProvider>  
+<ThemeProvider>
+  <LanguageProvider>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Header />
+      <TranslationNotice />
+      <div style={{ flex: 1 }}>{children}</div>
+      <Footer />
+    </div>
+  </LanguageProvider>
+</ThemeProvider>  
       </body>
     </html>
   );

@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { exams } from '@/data/exams';
+import { examMeta } from '@/data/examMeta';
 import { supabase } from '@/lib/supabase';
 import { useLanguage } from '@/lib/LanguageContext';
+import { Check } from 'lucide-react';
 
 const LOCAL_KEY = 'paathsala_chosen_exams';
 
@@ -57,31 +59,69 @@ export default function ExamSelector({
 
   return (
     <div>
-      <h2 className="font-display text-xl mb-3" style={{ color: 'var(--indigo)' }}>
+      <h2 className="font-display text-xl mb-4" style={{ color: 'var(--indigo)' }}>
         {t('chooseExams')}
       </h2>
-      <div className="flex flex-wrap gap-2">
+      <div
+        className="grid gap-4"
+        style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}
+      >
         {exams.map((exam) => {
+          const meta = examMeta[exam.id];
+          const Icon = meta?.icon;
           const isSelected = selected.includes(exam.id);
+
           return (
-            <div key={exam.id} className="flex flex-col items-start gap-1">
-              <button
-                onClick={() => toggle(exam.id)}
-                className="px-4 py-2 text-sm border transition-colors"
-                style={{
-                  borderColor: isSelected ? 'var(--marigold)' : '#E4DCC6',
-                  background: isSelected ? 'var(--marigold)' : 'var(--paper)',
-                  color: isSelected ? 'var(--ink)' : 'var(--indigo)',
-                }}
-              >
+            <div
+              key={exam.id}
+              onClick={() => toggle(exam.id)}
+              style={{
+                border: `1px solid ${isSelected ? 'var(--marigold)' : 'var(--border)'}`,
+                borderTop: isSelected ? '3px solid var(--marigold)' : '1px solid var(--border)',
+                padding: '20px',
+                cursor: 'pointer',
+                background: isSelected ? 'var(--surface)' : 'var(--surface)',
+                opacity: isSelected ? 1 : 0.9,
+                transition: 'border-color 0.15s ease',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                <div
+                  style={{
+                    width: '40px',
+                    height: '40px',
+                    background: 'var(--ink)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {Icon && <Icon size={20} color="var(--marigold)" />}
+                </div>
+                {isSelected && (
+                  <div style={{ background: 'var(--marigold)', borderRadius: '50%', padding: '3px' }}>
+                    <Check size={14} color="var(--paper)" />
+                  </div>
+                )}
+              </div>
+
+              <h3 className="font-display" style={{ fontSize: '17px', color: 'var(--indigo)', marginBottom: '4px' }}>
                 {exam.name}
-              </button>
+              </h3>
+              <p style={{ fontSize: '11px', color: 'var(--marigold)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '8px' }}>
+                {exam.category}
+              </p>
+              <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: isSelected ? '12px' : 0 }}>
+                {meta?.description}
+              </p>
+
               {isSelected && (
                 <Link
                   href={`/exams/${exam.id}`}
-                  style={{ fontSize: '12px', color: 'var(--indigo)', textDecoration: 'underline' }}
+                  onClick={(e) => e.stopPropagation()}
+                  style={{ fontSize: '13px', color: 'var(--indigo)', fontWeight: 600, textDecoration: 'underline' }}
                 >
-                  Open dashboard
+                  Open dashboard →
                 </Link>
               )}
             </div>

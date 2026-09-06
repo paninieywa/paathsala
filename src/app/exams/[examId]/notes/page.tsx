@@ -23,7 +23,7 @@ export default function NotesPage() {
         {notes.map((note) => {
           const isOpen = openId === note.id;
           return (
-            <div key={note.id} style={{ border: '1px solid #E4DCC6' }}>
+            <div key={note.id} style={{ border: '1px solid var(--border)' }}>
               <button
                 onClick={() => setOpenId(isOpen ? null : note.id)}
                 style={{

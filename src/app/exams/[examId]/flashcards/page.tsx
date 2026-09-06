@@ -25,7 +25,7 @@ export default function FlashcardsPage() {
         <h1 className="font-display text-2xl" style={{ color: 'var(--indigo)' }}>
           All caught up
         </h1>
-        <p style={{ color: '#5B665F', fontSize: '14px', marginTop: '8px' }}>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '8px' }}>
           No cards due for review right now. Come back tomorrow.
         </p>
       </main>
@@ -42,14 +42,14 @@ export default function FlashcardsPage() {
 
   return (
     <main style={{ padding: '48px', maxWidth: '480px' }}>
-      <p style={{ color: '#5B665F', fontSize: '13px', marginBottom: '16px' }}>
+      <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: '16px' }}>
         {queue.length} card{queue.length === 1 ? '' : 's'} left today
       </p>
 
       <div
         onClick={() => setFlipped((f) => !f)}
         style={{
-          border: '1px solid #E4DCC6',
+          border: '1px solid var(--border)',
           padding: '48px 24px',
           minHeight: '160px',
           display: 'flex',
@@ -67,21 +67,21 @@ export default function FlashcardsPage() {
       </div>
 
       {!flipped ? (
-        <p style={{ color: '#5B665F', fontSize: '13px' }}>Tap the card to reveal the answer.</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>Tap the card to reveal the answer.</p>
       ) : (
         <div className="flex gap-2">
           <button
-            onClick={() => handleAnswer(false)}
-            style={{ padding: '10px 20px', background: '#F3DADA', border: 'none', color: 'var(--ink)' }}
-          >
-            Didn&apos;t know it
-          </button>
-          <button
-            onClick={() => handleAnswer(true)}
-            style={{ padding: '10px 20px', background: '#DCEEE3', border: 'none', color: 'var(--ink)' }}
-          >
-            Knew it
-          </button>
+  onClick={() => handleAnswer(false)}
+  style={{ padding: '10px 20px', background: 'var(--feedback-wrong-bg)', border: 'none', color: 'var(--feedback-wrong-text)' }}
+>
+  Didn&apos;t know it
+</button>
+<button
+  onClick={() => handleAnswer(true)}
+  style={{ padding: '10px 20px', background: 'var(--feedback-correct-bg)', border: 'none', color: 'var(--feedback-correct-text)' }}
+>
+  Knew it
+</button>
         </div>
       )}
     </main>

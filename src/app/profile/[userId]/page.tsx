@@ -39,7 +39,7 @@ export default function PublicProfilePage() {
         Badges
       </h2>
       {badges.length === 0 ? (
-        <p style={{ color: '#5B665F', fontSize: '14px' }}>No badges yet.</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>No badges yet.</p>
       ) : (
         <div className="flex flex-wrap gap-2">
           {badges.map((b) => (

@@ -5,10 +5,13 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useLanguage } from '@/lib/LanguageContext';
 import { localeNames, Locale } from '@/lib/i18n';
+import { Moon, Sun } from 'lucide-react';
+import { useTheme } from '@/lib/ThemeContext';
 
 export default function Header() {
   const [userId, setUserId] = useState<string | null>(null);
   const { locale, setLocale, t } = useLanguage();
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -27,7 +30,7 @@ export default function Header() {
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '16px 32px',
-        borderBottom: '1px solid #E4DCC6',
+        borderBottom: '1px solid var(--border)',
         background: 'var(--paper)',
         flexWrap: 'wrap',
         gap: '10px',
@@ -53,7 +56,7 @@ export default function Header() {
             {t('login')}
           </Link>
         )}
-        <select
+                <select
           value={locale}
           onChange={(e) => setLocale(e.target.value as Locale)}
           style={{ fontSize: '13px', border: '1px solid var(--indigo)', color: 'var(--indigo)', background: 'var(--paper)', padding: '4px 8px' }}
@@ -62,6 +65,13 @@ export default function Header() {
             <option key={code} value={code}>{name}</option>
           ))}
         </select>
+
+        <button
+          onClick={toggleTheme}
+          style={{ border: '1px solid var(--indigo)', color: 'var(--indigo)', background: 'none', padding: '5px 8px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+        >
+          {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
+        </button>
       </nav>
     </header>
   );

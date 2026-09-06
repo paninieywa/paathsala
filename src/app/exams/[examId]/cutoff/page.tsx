@@ -18,12 +18,12 @@ export default function CutoffPage() {
       </p>
 
       {history.length === 0 ? (
-        <p style={{ color: '#5B665F', fontSize: '14px' }}>No cutoff data available for this exam yet.</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>No cutoff data available for this exam yet.</p>
       ) : (
         <>
           <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '24px' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid #E4DCC6' }}>
+              <tr style={{ borderBottom: '1px solid var(--border)' }}>
                 <th style={{ textAlign: 'left', padding: '8px', fontSize: '13px', color: 'var(--indigo)' }}>Year</th>
                 <th style={{ textAlign: 'left', padding: '8px', fontSize: '13px', color: 'var(--indigo)' }}>General</th>
                 <th style={{ textAlign: 'left', padding: '8px', fontSize: '13px', color: 'var(--indigo)' }}>OBC</th>
@@ -32,7 +32,7 @@ export default function CutoffPage() {
             </thead>
             <tbody>
               {history.map((h) => (
-                <tr key={h.year} style={{ borderBottom: '1px solid #E4DCC6' }}>
+                <tr key={h.year} style={{ borderBottom: '1px solid var(--border)' }}>
                   <td style={{ padding: '8px', fontSize: '14px' }}>{h.year}</td>
                   <td style={{ padding: '8px', fontSize: '14px' }}>{h.generalCutoff}</td>
                   <td style={{ padding: '8px', fontSize: '14px' }}>{h.obcCutoff}</td>
@@ -44,7 +44,7 @@ export default function CutoffPage() {
 
           {estimate && (
             <div style={{ border: '1px solid var(--marigold)', padding: '16px' }}>
-              <p style={{ fontSize: '13px', color: '#5B665F' }}>Rough trend-based estimate for next year (General):</p>
+              <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Rough trend-based estimate for next year (General):</p>
               <p className="font-display" style={{ fontSize: '28px', color: 'var(--marigold-deep, var(--marigold))' }}>~{estimate}</p>
             </div>
           )}

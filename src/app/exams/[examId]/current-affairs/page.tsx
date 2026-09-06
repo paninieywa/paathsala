@@ -13,12 +13,12 @@ export default function CurrentAffairsPage() {
         Current Affairs
       </h1>
       {items.length === 0 ? (
-        <p style={{ color: '#5B665F', fontSize: '14px' }}>Nothing posted for this exam yet — check back soon.</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Nothing posted for this exam yet — check back soon.</p>
       ) : (
         <div className="flex flex-col gap-3">
           {items.map((item, i) => (
             <div key={i} style={{ borderLeft: '3px solid var(--indigo)', padding: '10px 16px' }}>
-              <p style={{ fontSize: '12px', color: '#5B665F' }}>
+              <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                 {new Date(item.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
               </p>
               <p style={{ fontFamily: 'var(--font-space-grotesk)', color: 'var(--indigo)', margin: '4px 0' }}>{item.headline}</p>

@@ -65,7 +65,7 @@ export default function LoginPage() {
             placeholder="Your name (for new accounts)"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            style={{ padding: '10px', border: '1px solid #E4DCC6' }}
+            style={{ padding: '10px', border: '1px solid var(--border)' }}
           />
           <input
             type="email"
@@ -73,7 +73,7 @@ export default function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            style={{ padding: '10px', border: '1px solid #E4DCC6' }}
+            style={{ padding: '10px', border: '1px solid var(--border)' }}
           />
           {error && <p style={{ color: 'var(--kumkum)', fontSize: '13px' }}>{error}</p>}
           <button
@@ -86,7 +86,7 @@ export default function LoginPage() {
         </form>
       ) : (
         <form onSubmit={verifyCode} className="flex flex-col gap-3">
-          <p style={{ fontSize: '13px', color: '#5B665F' }}>
+          <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
             We sent a 6-digit code to {email}.
           </p>
           <input
@@ -95,7 +95,7 @@ export default function LoginPage() {
             onChange={(e) => setCode(e.target.value)}
             required
             maxLength={6}
-            style={{ padding: '10px', border: '1px solid #E4DCC6', letterSpacing: '4px', fontSize: '18px' }}
+            style={{ padding: '10px', border: '1px solid var(--border)', letterSpacing: '4px', fontSize: '18px' }}
           />
           {error && <p style={{ color: 'var(--kumkum)', fontSize: '13px' }}>{error}</p>}
           <button

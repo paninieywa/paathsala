@@ -105,11 +105,11 @@ export default function AdminPage() {
       </h1>
 
       {pending.length === 0 ? (
-        <p style={{ color: '#5B665F', fontSize: '14px' }}>Nothing waiting for review.</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Nothing waiting for review.</p>
       ) : (
         <div className="flex flex-col gap-3">
           {pending.map((r) => (
-            <div key={r.id} style={{ border: '1px solid #E4DCC6', padding: '14px 16px' }}>
+            <div key={r.id} style={{ border: '1px solid var(--border)', padding: '14px 16px' }}>
               <p style={{ fontSize: '14px', color: 'var(--ink)', marginBottom: '4px' }}>
                 <strong>{r.title}</strong> — {r.exam_id} ({r.link_type})
               </p>
@@ -139,13 +139,13 @@ export default function AdminPage() {
         Reported Forum Posts
       </h2>
       {reports.length === 0 ? (
-        <p style={{ color: '#5B665F', fontSize: '14px' }}>No reports right now.</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>No reports right now.</p>
       ) : (
         <div className="flex flex-col gap-2">
           {reports.map((r) => (
             <div key={r.id} style={{ border: '1px solid var(--kumkum)', padding: '12px 16px', fontSize: '13px' }}>
               <p>Post ID: {r.post_id}</p>
-              <p style={{ color: '#5B665F' }}>Reason: {r.reason}</p>
+              <p style={{ color: 'var(--text-muted)' }}>Reason: {r.reason}</p>
             </div>
           ))}
         </div>

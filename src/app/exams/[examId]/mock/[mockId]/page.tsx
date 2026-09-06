@@ -91,7 +91,7 @@ export default function MockTestPage() {
                 <span>{t.topicId}</span>
                 <span>{pct}% correct</span>
               </div>
-              <div style={{ background: '#E4DCC6', height: '8px' }}>
+              <div style={{ background: 'var(--border)', height: '8px' }}>
                 <div style={{ background: pct >= 50 ? 'var(--leaf)' : 'var(--kumkum)', width: `${pct}%`, height: '100%' }} />
               </div>
             </div>
@@ -128,7 +128,7 @@ export default function MockTestPage() {
                 style={{
                   padding: '10px 14px',
                   textAlign: 'left',
-                  border: '1px solid #E4DCC6',
+                  border: '1px solid var(--border)',
                   background: answers[q.id] === oi ? 'var(--marigold)' : 'var(--paper)',
                   color: 'var(--ink)',
                 }}

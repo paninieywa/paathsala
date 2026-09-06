@@ -118,7 +118,7 @@ export default function ForumPage() {
           onChange={(e) => setNewPost(e.target.value)}
           placeholder="Ask a question or share something useful..."
           rows={3}
-          style={{ width: '100%', padding: '10px', border: '1px solid #E4DCC6', fontFamily: 'inherit' }}
+          style={{ width: '100%', padding: '10px', border: '1px solid var(--border)', fontFamily: 'inherit' }}
         />
         {error && <p style={{ color: 'var(--kumkum)', fontSize: '13px', marginTop: '6px' }}>{error}</p>}
         <button
@@ -131,15 +131,15 @@ export default function ForumPage() {
 
       <div className="flex flex-col gap-3">
         {posts.length === 0 && (
-          <p style={{ color: '#5B665F', fontSize: '14px' }}>No posts yet — be the first to ask something.</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>No posts yet — be the first to ask something.</p>
         )}
         {posts.map((post) => (
-          <div key={post.id} style={{ border: '1px solid #E4DCC6', padding: '14px 16px' }}>
+          <div key={post.id} style={{ border: '1px solid var(--border)', padding: '14px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
               <Link href={`/profile/${post.author_id}`} style={{ fontSize: '12.5px', color: 'var(--indigo)', textDecoration: 'none', fontWeight: 600 }}>
                 {post.profiles?.display_name ?? 'Student'}
               </Link>
-              <span style={{ fontSize: '12px', color: '#5B665F' }}>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                 {new Date(post.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
               </span>
             </div>

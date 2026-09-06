@@ -91,18 +91,18 @@ export default function ResourcesPage() {
         Shared Resources
       </h1>
 
-      <form onSubmit={handleSubmit} style={{ marginBottom: '32px', border: '1px solid #E4DCC6', padding: '16px' }}>
+      <form onSubmit={handleSubmit} style={{ marginBottom: '32px', border: '1px solid var(--border)', padding: '16px' }}>
         <input
           placeholder="Title (e.g. 'My handwritten Polity notes')"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          style={{ width: '100%', padding: '10px', border: '1px solid #E4DCC6', marginBottom: '8px' }}
+          style={{ width: '100%', padding: '10px', border: '1px solid var(--border)', marginBottom: '8px' }}
         />
         <input
           placeholder="Link (Google Drive, Dropbox, Mega, YouTube...)"
           value={link}
           onChange={(e) => setLink(e.target.value)}
-          style={{ width: '100%', padding: '10px', border: '1px solid #E4DCC6', marginBottom: '8px' }}
+          style={{ width: '100%', padding: '10px', border: '1px solid var(--border)', marginBottom: '8px' }}
         />
         {error && <p style={{ color: 'var(--kumkum)', fontSize: '13px', marginBottom: '8px' }}>{error}</p>}
         <button
@@ -112,20 +112,20 @@ export default function ResourcesPage() {
         >
           {submitting ? 'Sharing...' : 'Share resource'}
         </button>
-        <p style={{ fontSize: '12px', color: '#5B665F', marginTop: '8px' }}>
+        <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '8px' }}>
           Make sure your link&apos;s sharing setting is &quot;Anyone with the link.&quot; Reviewed before appearing for others.
         </p>
       </form>
 
       <div className="flex flex-col gap-2">
         {resources.length === 0 && (
-          <p style={{ color: '#5B665F', fontSize: '14px' }}>No shared resources yet.</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>No shared resources yet.</p>
         )}
         {resources.map((r) => (
-          <div key={r.id} style={{ border: '1px solid #E4DCC6', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div key={r.id} style={{ border: '1px solid var(--border)', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ color: 'var(--ink)', fontSize: '14px' }}>
               {r.title}
-              <span style={{ color: '#5B665F', fontSize: '12px', marginLeft: '8px' }}>
+              <span style={{ color: 'var(--text-muted)', fontSize: '12px', marginLeft: '8px' }}>
                 ({r.link_type}{r.status === 'pending' ? ', pending review' : ''})
               </span>
             </span>

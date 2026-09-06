@@ -48,7 +48,7 @@ export default function AnalyticsPage() {
         <h1 className="font-display text-2xl mb-2" style={{ color: 'var(--indigo)' }}>
           Performance Analytics
         </h1>
-        <p style={{ color: '#5B665F', fontSize: '14px' }}>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>
           Take a mock test first — analytics build up from your attempts.
         </p>
       </main>
@@ -66,7 +66,7 @@ export default function AnalyticsPage() {
       <h1 className="font-display text-2xl mb-2" style={{ color: 'var(--indigo)' }}>
         Performance Analytics
       </h1>
-      <p style={{ color: '#5B665F', fontSize: '14px', marginBottom: '24px' }}>
+      <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '24px' }}>
         Based on {attemptCount} mock test attempt{attemptCount === 1 ? '' : 's'} — weakest topics shown first.
       </p>
 
@@ -78,11 +78,11 @@ export default function AnalyticsPage() {
             <div key={t.topicId}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '4px' }}>
                 <span style={{ color: 'var(--ink)' }}>{t.topicId}</span>
-                <span style={{ color: '#5B665F' }}>
+                <span style={{ color: 'var(--text-muted)' }}>
                   {t.correct} correct · {t.wrong} wrong · {t.skipped} skipped
                 </span>
               </div>
-              <div style={{ background: '#E4DCC6', height: '10px' }}>
+              <div style={{ background: 'var(--border)', height: '10px' }}>
                 <div
                   style={{
                     background: pct >= 60 ? 'var(--leaf)' : pct >= 35 ? 'var(--marigold)' : 'var(--kumkum)',
