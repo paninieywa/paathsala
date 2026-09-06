@@ -28,7 +28,7 @@ export default function Footer() {
             </div>
 
             <div>
-              <p style={{ fontSize: '11.5px', color: '#7C8B83', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              <p style={{ fontSize: '11.5px', color: 'var(--footer-label)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                 Legal
               </p>
               <div className="flex flex-col gap-2">
