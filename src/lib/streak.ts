@@ -36,19 +36,28 @@ export async function completeToday(userId: string) {
   }
 
   const today = todayStr();
-  if (profile.last_completed === today) return profile;
+  const completedDates: string[] = profile.completed_dates ?? [];
+  const alreadyRecordedToday = completedDates.includes(today);
 
-  let newCount: number;
-  if (!profile.last_completed) {
-    newCount = 1;
-  } else {
-    const gap = daysBetween(profile.last_completed, today);
-    newCount = gap === 1 ? profile.streak_count + 1 : 1;
+  if (profile.last_completed === today && alreadyRecordedToday) {
+    return profile;
   }
+
+  let newCount = profile.streak_count;
+  if (profile.last_completed !== today) {
+    if (!profile.last_completed) {
+      newCount = 1;
+    } else {
+      const gap = daysBetween(profile.last_completed, today);
+      newCount = gap === 1 ? profile.streak_count + 1 : 1;
+    }
+  }
+
+  const updatedDates = alreadyRecordedToday ? completedDates : [...completedDates, today];
 
   const { data, error } = await supabase
     .from('profiles')
-    .update({ streak_count: newCount, last_completed: today })
+    .update({ streak_count: newCount, last_completed: today, completed_dates: updatedDates })
     .eq('id', userId)
     .select()
     .single();

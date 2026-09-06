@@ -3,8 +3,17 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { getProfile, getBadges } from '@/lib/streak';
+import LoginGate from '@/components/LoginGate';
 
 export default function PublicProfilePage() {
+  return (
+    <LoginGate message="Log in to view student profiles.">
+      <PublicProfileContent />
+    </LoginGate>
+  );
+}
+
+function PublicProfileContent() {
   const params = useParams<{ userId: string }>();
   const [profile, setProfile] = useState<{ display_name: string; streak_count: number } | null>(null);
   const [notFound, setNotFound] = useState(false);

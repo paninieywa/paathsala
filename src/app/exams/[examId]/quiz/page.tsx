@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { getQuestions } from '@/data/questions';
 import { supabase } from '@/lib/supabase';
 import { completeToday } from '@/lib/streak';
+import Link from 'next/link';
 
 export default function QuizPage() {
   const params = useParams<{ examId: string }>();
@@ -53,9 +54,20 @@ export default function QuizPage() {
         <p style={{ fontSize: '18px', color: 'var(--ink)' }}>
           You scored {score} out of {questions.length}.
         </p>
-        <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '12px' }}>
-          {userId ? "Today's streak has been recorded." : 'Log in to save your streak next time.'}
-        </p>
+        {userId ? (
+  <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '12px' }}>
+    Today&apos;s streak has been recorded.
+  </p>
+) : (
+  <div style={{ border: '1px solid var(--marigold)', background: 'var(--surface)', padding: '14px 16px', marginTop: '16px' }}>
+    <p style={{ color: 'var(--ink)', fontSize: '14px', marginBottom: '8px' }}>
+      This score won&apos;t be saved — log in to track your streak and badges.
+    </p>
+    <Link href="/login" style={{ fontSize: '13px', color: 'var(--indigo)', fontWeight: 600, textDecoration: 'underline' }}>
+      Log in
+    </Link>
+  </div>
+)}
       </main>
     );
   }

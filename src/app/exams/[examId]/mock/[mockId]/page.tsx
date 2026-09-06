@@ -7,9 +7,18 @@ import { getMockTest } from '@/data/mockTests';
 import { saveAttempt, TopicResult } from '@/lib/mockAttempts';
 import { supabase } from '@/lib/supabase';
 import { completeToday } from '@/lib/streak';
+import LoginGate from '@/components/LoginGate';
 import { scoreMockTest } from '@/lib/scoreMockTest';
 
 export default function MockTestPage() {
+  return (
+    <LoginGate message="Mock tests are available to logged-in students so your attempts and analytics are saved.">
+      <MockTestContent />
+    </LoginGate>
+  );
+}
+
+function MockTestContent() {
   const params = useParams<{ examId: string; mockId: string }>();
   const { examId, mockId } = params;
 

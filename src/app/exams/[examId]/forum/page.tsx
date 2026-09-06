@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import LoginGate from '@/components/LoginGate';
 
 type Post = {
   id: string;
@@ -15,6 +16,14 @@ type Post = {
 };
 
 export default function ForumPage() {
+  return (
+    <LoginGate message="Log in to view and join the discussion for this exam.">
+      <ForumContent />
+    </LoginGate>
+  );
+}
+
+function ForumContent() {
   const params = useParams<{ examId: string }>();
   const examId = params.examId;
 

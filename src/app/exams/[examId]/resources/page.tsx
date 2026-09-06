@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import LoginGate from '@/components/LoginGate';
 
 type Resource = {
   id: string;
@@ -21,6 +22,14 @@ function detectLinkType(url: string): string {
 }
 
 export default function ResourcesPage() {
+  return (
+    <LoginGate message="Log in to view and share study resources for this exam.">
+      <ResourcesContent />
+    </LoginGate>
+  );
+}
+
+function ResourcesContent() {
   const params = useParams<{ examId: string }>();
   const examId = params.examId;
 
