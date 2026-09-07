@@ -79,9 +79,10 @@ export default function SettingsModal({ userId, initial, onClose, onSaved }: Pro
       style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: '20px' }}
     >
       <div
-        onClick={(e) => e.stopPropagation()}
-        style={{ background: 'var(--surface)', border: '1px solid var(--border)', maxWidth: '480px', width: '100%', maxHeight: '85vh', overflowY: 'auto', padding: '28px' }}
-      >
+  onClick={(e) => e.stopPropagation()}
+  className="hide-scrollbar"
+  style={{ background: 'var(--surface)', border: '1px solid var(--border)', maxWidth: '480px', width: '100%', maxHeight: '85vh', overflowY: 'auto', padding: '28px', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <h2 className="font-display text-xl" style={{ color: 'var(--indigo)' }}>Settings</h2>
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}>

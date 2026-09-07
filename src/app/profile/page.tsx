@@ -44,26 +44,33 @@ export default function ProfilePage() {
       }
       setUserId(session.user.id);
 
-      const profile = await getProfile(session.user.id);
-      if (profile) {
-        setDisplayName(profile.display_name);
-        setAvatarUrl(profile.avatar_url ?? null);
-        setBannerId(profile.banner_id ?? 'marigold');
-        setBio(profile.bio ?? '');
-        setCity(profile.city ?? '');
-        setContactEmail(profile.contact_email ?? '');
-        setShowCity(profile.show_city ?? false);
-        setShowEmail(profile.show_email ?? false);
-        setStreak(profile.streak_count);
-        setCompletedDates(profile.completed_dates ?? []);
-        setOnLeaderboard(profile.show_on_leaderboard ?? false);
-        setChosenExams(profile.chosen_exams ?? []);
-        setDoneToday(profile.last_completed === new Date().toISOString().slice(0, 10));
-        if (profile.created_at) {
-          setJoinedAt(new Date(profile.created_at).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' }));
-        }
-      }
-      setLoading(false);
+let profile = await getProfile(session.user.id);
+
+if (!profile) {
+  const fallbackName = session.user.email?.split('@')[0] || 'Student';
+  await supabase.from('profiles').insert({ id: session.user.id, display_name: fallbackName });
+  profile = await getProfile(session.user.id);
+}
+
+if (profile) {
+  setDisplayName(profile.display_name);
+  setAvatarUrl(profile.avatar_url ?? null);
+  setBannerId(profile.banner_id ?? 'marigold');
+  setBio(profile.bio ?? '');
+  setCity(profile.city ?? '');
+  setContactEmail(profile.contact_email ?? '');
+  setShowCity(profile.show_city ?? false);
+  setShowEmail(profile.show_email ?? false);
+  setStreak(profile.streak_count);
+  setCompletedDates(profile.completed_dates ?? []);
+  setOnLeaderboard(profile.show_on_leaderboard ?? false);
+  setChosenExams(profile.chosen_exams ?? []);
+  setDoneToday(profile.last_completed === new Date().toISOString().slice(0, 10));
+  if (profile.created_at) {
+    setJoinedAt(new Date(profile.created_at).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' }));
+  }
+}
+setLoading(false);
     }
     load();
   }, [router]);

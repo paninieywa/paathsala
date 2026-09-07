@@ -91,3 +91,7 @@ body {
     font-size: 44px !important;
   }
 }
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
