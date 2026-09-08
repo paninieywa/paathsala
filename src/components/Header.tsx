@@ -47,6 +47,9 @@ export default function Header() {
         <Link href="/leaderboard" style={{ fontSize: '14px', color: 'var(--indigo)', textDecoration: 'none' }}>
           Leaderboard
         </Link>
+        <Link href="/arena" style={{ fontSize: '14px', color: 'var(--indigo)', textDecoration: 'none' }}>
+  Arena
+</Link>
         {userId ? (
           <Link href="/profile" style={{ fontSize: '14px', color: 'var(--indigo)', textDecoration: 'none' }}>
             {t('profile')}

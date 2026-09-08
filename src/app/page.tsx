@@ -3,16 +3,16 @@
 import { useState } from 'react';
 import Hero3D from '@/components/Hero3D';
 import ExamSelector from '@/components/ExamSelector';
-import { getUpcomingDeadlines } from '@/data/deadlines';
-import { getFactsForExams } from '@/data/facts';
+import { getUpcomingDeadlines } from '@/data/deadlines'
 import { exams } from '@/data/exams';
+import Link from 'next/link';
+import { Swords } from 'lucide-react';
 import { useLanguage } from '@/lib/LanguageContext';
 
 export default function Home() {
   const { t } = useLanguage();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const upcoming = getUpcomingDeadlines(selectedIds);
-  const relevantFacts = getFactsForExams(selectedIds);
 
   return (
     <main>
@@ -69,20 +69,33 @@ export default function Home() {
         </section>
       )}
 
-      {selectedIds.length > 0 && relevantFacts.length > 0 && (
-        <section style={{ padding: `0 clamp(20px, 5vw, 48px) 64px` }}>
-          <h2 className="font-display text-xl mb-3" style={{ color: 'var(--indigo)' }}>
-            Facts &amp; tricks for you
-          </h2>
-          <div className="flex flex-col gap-2">
-            {relevantFacts.map((f, i) => (
-              <div key={i} style={{ borderLeft: '3px solid var(--marigold)', background: 'var(--surface)', padding: '10px 16px' }}>
-                <p style={{ fontSize: '14px', color: 'var(--ink)' }}>{f.text}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+      <section style={{ padding: `0 clamp(20px, 5vw, 48px) 64px` }}>
+  <Link
+    href="/arena"
+    style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      flexWrap: 'wrap',
+      gap: '16px',
+      border: '1px solid var(--hero-border)',
+      background: 'var(--hero-bg)',
+      padding: '24px',
+      textDecoration: 'none',
+    }}
+  >
+    <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+      <Swords size={28} color="var(--marigold)" />
+      <div>
+        <p className="font-display" style={{ fontSize: '18px', color: 'var(--hero-text)' }}>Challenge Arena</p>
+        <p style={{ fontSize: '13px', color: 'var(--hero-text)', opacity: 0.8 }}>
+          Race a friend head-to-head — first to answer 10 questions wins the tug of war.
+        </p>
+      </div>
+    </div>
+    <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--marigold)' }}>Play now →</span>
+  </Link>
+</section>
     </main>
   );
 }
