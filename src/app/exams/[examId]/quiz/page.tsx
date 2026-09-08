@@ -6,6 +6,7 @@ import { getQuestions } from '@/data/questions';
 import { supabase } from '@/lib/supabase';
 import { completeToday } from '@/lib/streak';
 import Link from 'next/link';
+import { incrementStat } from '@/lib/incrementStat';
 import { getDailySubset } from '@/lib/dailySubset';
 
 export default function QuizPage() {
@@ -42,7 +43,10 @@ export default function QuizPage() {
       setIndex((i) => i + 1);
       setSelected(null);
     } else {
-      if (userId) await completeToday(userId);
+      if (userId) {
+      await completeToday(userId);
+      await incrementStat(userId, 'total_quizzes_completed');
+      }
       setFinished(true);
     }
   }

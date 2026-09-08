@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+}
+
 :root {
   --ink: #14231F;
   --paper: #F6F1E3;
@@ -67,6 +75,45 @@ body {
   font-family: var(--font-khand), sans-serif;
 }
 
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.profile-sidebar {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.profile-main {
+  grid-column: 1;
+  grid-row: 2;
+  min-width: 0;
+}
+
+@media (min-width: 860px) {
+  .profile-grid {
+    grid-template-columns: 300px 1fr;
+  }
+  .profile-sidebar {
+    grid-column: 1;
+    grid-row: 1;
+    position: sticky;
+    top: 24px;
+    align-self: start;
+  }
+  .profile-main {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
 @media (max-width: 640px) {
   main {
     padding: 20px !important;
@@ -90,8 +137,4 @@ body {
   .hero-title {
     font-size: 44px !important;
   }
-}
-
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
 }

@@ -87,14 +87,12 @@ export default function StreakHeatmap({ completedDates }: { completedDates: stri
           </div>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '4px', marginTop: '10px' }}>
-          <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Less</span>
-          <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: 'var(--border)' }} />
-          <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: 'var(--marigold)', opacity: 0.4 }} />
-          <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: 'var(--marigold)', opacity: 0.7 }} />
-          <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: 'var(--marigold)' }} />
-          <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>More</span>
-        </div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '6px', marginTop: '10px' }}>
+  <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: 'var(--border)' }} />
+  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Not completed</span>
+  <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: 'var(--marigold)', marginLeft: '10px' }} />
+  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Completed</span>
+</div>
       </div>
 
       <style jsx>{`

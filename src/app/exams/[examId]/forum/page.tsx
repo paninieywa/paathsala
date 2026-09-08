@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { incrementStat } from '@/lib/incrementStat';
 import LoginGate from '@/components/LoginGate';
 
 type Post = {
@@ -71,6 +72,7 @@ function ForumContent() {
     }
     setNewPost('');
     loadPosts();
+    await incrementStat(userId, 'forum_post_count');
   }
 
   async function handleUpvote(postId: string) {

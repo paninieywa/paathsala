@@ -8,6 +8,7 @@ import { saveAttempt, TopicResult } from '@/lib/mockAttempts';
 import { supabase } from '@/lib/supabase';
 import { completeToday } from '@/lib/streak';
 import LoginGate from '@/components/LoginGate';
+import { incrementStat } from '@/lib/incrementStat';
 import { scoreMockTest } from '@/lib/scoreMockTest';
 
 export default function MockTestPage() {
@@ -47,8 +48,11 @@ function MockTestContent() {
     topicBreakdown: breakdown,
     completedAt: new Date().toISOString(),
   });
-  if (userId) await completeToday(userId);
-  setSubmitted(true);
+  if (userId) {
+  await completeToday(userId);
+  await incrementStat(userId, 'total_mocks_completed');
+}
+setSubmitted(true);
 }
 
   useEffect(() => {

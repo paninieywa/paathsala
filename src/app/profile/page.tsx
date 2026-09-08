@@ -2,14 +2,18 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { getProfile, completeToday, getBadges } from '@/lib/streak';
+import { getProfile } from '@/lib/streak';
 import { uploadAvatar } from '@/lib/avatar';
 import { bannerArtMap } from '@/components/BannerArt';
 import StreakHeatmap from '@/components/StreakHeatmap';
 import SettingsModal from '@/components/SettingsModal';
 import BannerPicker from '@/components/BannerPicker';
-import { Flame, Award, Share2, Camera, Settings, MapPin, Mail, Pencil } from 'lucide-react';
+import EarnedBadges from '@/components/EarnedBadges';
+import ExamsPanel from '@/components/ExamsPanel';
+import { exams } from '@/data/exams';
+import { Camera, Settings, MapPin, Mail, Calendar, Pencil, CheckCircle2 } from 'lucide-react';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -29,6 +33,10 @@ export default function ProfilePage() {
   const [doneToday, setDoneToday] = useState(false);
   const [onLeaderboard, setOnLeaderboard] = useState(false);
   const [chosenExams, setChosenExams] = useState<string[]>([]);
+  const [totalQuizzes, setTotalQuizzes] = useState(0);
+  const [totalMocks, setTotalMocks] = useState(0);
+  const [forumPosts, setForumPosts] = useState(0);
+  const [resourcesShared, setResourcesShared] = useState(0);
   const [loading, setLoading] = useState(true);
   const [avatarError, setAvatarError] = useState('');
   const [joinedAt, setJoinedAt] = useState('');
@@ -44,46 +52,39 @@ export default function ProfilePage() {
       }
       setUserId(session.user.id);
 
-let profile = await getProfile(session.user.id);
+      let profile = await getProfile(session.user.id);
+      if (!profile) {
+        const fallbackName = session.user.email?.split('@')[0] || 'Student';
+        await supabase.from('profiles').insert({ id: session.user.id, display_name: fallbackName });
+        profile = await getProfile(session.user.id);
+      }
 
-if (!profile) {
-  const fallbackName = session.user.email?.split('@')[0] || 'Student';
-  await supabase.from('profiles').insert({ id: session.user.id, display_name: fallbackName });
-  profile = await getProfile(session.user.id);
-}
-
-if (profile) {
-  setDisplayName(profile.display_name);
-  setAvatarUrl(profile.avatar_url ?? null);
-  setBannerId(profile.banner_id ?? 'marigold');
-  setBio(profile.bio ?? '');
-  setCity(profile.city ?? '');
-  setContactEmail(profile.contact_email ?? '');
-  setShowCity(profile.show_city ?? false);
-  setShowEmail(profile.show_email ?? false);
-  setStreak(profile.streak_count);
-  setCompletedDates(profile.completed_dates ?? []);
-  setOnLeaderboard(profile.show_on_leaderboard ?? false);
-  setChosenExams(profile.chosen_exams ?? []);
-  setDoneToday(profile.last_completed === new Date().toISOString().slice(0, 10));
-  if (profile.created_at) {
-    setJoinedAt(new Date(profile.created_at).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' }));
-  }
-}
-setLoading(false);
+      if (profile) {
+        setDisplayName(profile.display_name);
+        setAvatarUrl(profile.avatar_url ?? null);
+        setBannerId(profile.banner_id ?? 'marigold');
+        setBio(profile.bio ?? '');
+        setCity(profile.city ?? '');
+        setContactEmail(profile.contact_email ?? '');
+        setShowCity(profile.show_city ?? false);
+        setShowEmail(profile.show_email ?? false);
+        setStreak(profile.streak_count);
+        setCompletedDates(profile.completed_dates ?? []);
+        setOnLeaderboard(profile.show_on_leaderboard ?? false);
+        setChosenExams(profile.chosen_exams ?? []);
+        setTotalQuizzes(profile.total_quizzes_completed ?? 0);
+        setTotalMocks(profile.total_mocks_completed ?? 0);
+        setForumPosts(profile.forum_post_count ?? 0);
+        setResourcesShared(profile.resources_shared_count ?? 0);
+        setDoneToday(profile.last_completed === new Date().toISOString().slice(0, 10));
+        if (profile.created_at) {
+          setJoinedAt(new Date(profile.created_at).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }));
+        }
+      }
+      setLoading(false);
     }
     load();
   }, [router]);
-
-  async function handleComplete() {
-    if (!userId) return;
-    const updated = await completeToday(userId);
-    if (updated) {
-      setStreak(updated.streak_count);
-      setCompletedDates(updated.completed_dates ?? []);
-      setDoneToday(true);
-    }
-  }
 
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (!userId || !e.target.files?.[0]) return;
@@ -98,170 +99,138 @@ setLoading(false);
 
   if (loading) return <main style={{ padding: '48px' }}>Loading...</main>;
 
-  const badges = getBadges(streak);
   const initial = displayName.charAt(0).toUpperCase();
   const BannerArt = bannerArtMap[bannerId] ?? bannerArtMap.marigold;
 
   return (
     <div>
-      <div style={{ width: '100%', height: 'clamp(120px, 24vw, 180px)', position: 'relative' }}>
+      <div style={{ width: '100%', height: 'clamp(90px, 16vw, 130px)', position: 'relative' }}>
         <BannerArt />
         <button
           onClick={() => setBannerPickerOpen(true)}
-          style={{
-            position: 'absolute',
-            top: '12px',
-            right: '12px',
-            background: 'rgba(0,0,0,0.4)',
-            border: 'none',
-            borderRadius: '50%',
-            width: '32px',
-            height: '32px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            color: '#fff',
-          }}
+          style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(0,0,0,0.4)', border: 'none', borderRadius: '50%', width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff' }}
           title="Change banner"
         >
-          <Pencil size={14} />
+          <Pencil size={13} />
         </button>
       </div>
 
-      <main style={{ maxWidth: '760px', margin: '0 auto', padding: 'clamp(16px, 4vw, 40px)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 'clamp(-48px, -8vw, -56px)', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
-          <div style={{ position: 'relative' }}>
-            <div
-              style={{
-                width: 'clamp(72px, 18vw, 96px)',
-                height: 'clamp(72px, 18vw, 96px)',
-                borderRadius: '50%',
-                background: avatarUrl ? `url(${avatarUrl}) center/cover` : 'var(--hero-bg)',
-                color: 'var(--marigold)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontFamily: 'var(--font-space-grotesk)',
-                fontSize: '30px',
-                border: '4px solid var(--paper)',
-              }}
-            >
-              {!avatarUrl && initial}
-            </div>
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              style={{
-                position: 'absolute',
-                bottom: 2,
-                right: 2,
-                width: '26px',
-                height: '26px',
-                borderRadius: '50%',
-                background: 'var(--marigold)',
-                border: '2px solid var(--paper)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-              }}
-            >
-              <Camera size={12} color="var(--ink)" />
-            </button>
-            <input ref={fileInputRef} type="file" accept="image/jpeg" onChange={handleAvatarChange} style={{ display: 'none' }} />
-          </div>
-
-          <button
-            onClick={() => setSettingsOpen(true)}
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: 'var(--indigo)', background: 'none', border: '1px solid var(--border)', padding: '8px 14px', cursor: 'pointer' }}
-          >
-            <Settings size={15} /> Settings
-          </button>
-        </div>
-
-        {avatarError && <p style={{ color: 'var(--feedback-wrong-text)', fontSize: '12.5px', marginBottom: '12px' }}>{avatarError}</p>}
-
-        <h1 className="font-display text-2xl" style={{ color: 'var(--indigo)', marginBottom: '4px' }}>
-          {displayName}
-        </h1>
-
-        <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '10px' }}>
-          {joinedAt && <span style={{ fontSize: '12.5px', color: 'var(--text-muted)' }}>Student since {joinedAt}</span>}
-          {showCity && city && (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12.5px', color: 'var(--text-muted)' }}>
-              <MapPin size={13} /> {city}
-            </span>
-          )}
-          {showEmail && contactEmail && (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12.5px', color: 'var(--text-muted)' }}>
-              <Mail size={13} /> {contactEmail}
-            </span>
-          )}
-        </div>
-
-        {bio && <p style={{ color: 'var(--ink)', fontSize: '14px', marginBottom: '28px', maxWidth: '60ch' }}>{bio}</p>}
-
-        <div style={{ border: '1px solid var(--border)', background: 'var(--surface)', padding: 'clamp(16px, 4vw, 24px)', marginBottom: '24px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '16px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <Flame size={26} color="var(--marigold)" />
-              <div>
-                <p className="font-display" style={{ fontSize: '28px', color: 'var(--marigold)', lineHeight: 1 }}>
-                  {streak}
-                </p>
-                <p style={{ color: 'var(--text-muted)', fontSize: '12.5px' }}>day streak</p>
+      <main style={{ maxWidth: '1280px', margin: '0 auto', padding: 'clamp(16px, 4vw, 40px)' }}>
+        <div className="profile-grid">
+          <aside className="profile-sidebar">
+            <div style={{ position: 'relative', width: 'fit-content', marginTop: 'clamp(-40px, -7vw, -50px)', marginBottom: '14px' }}>
+              <div
+                style={{
+                  width: 'clamp(140px, 22vw, 220px)', height: 'clamp(140px, 22vw, 220px)', borderRadius: '50%',
+                  background: avatarUrl ? `url(${avatarUrl}) center/cover` : 'var(--hero-bg)', color: 'var(--marigold)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-space-grotesk)',
+                  fontSize: '64px', border: '4px solid var(--paper)',
+                }}
+              >
+                {!avatarUrl && initial}
               </div>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                style={{ position: 'absolute', bottom: 4, right: 4, width: '32px', height: '32px', borderRadius: '50%', background: 'var(--marigold)', border: '2px solid var(--paper)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+              >
+                <Camera size={15} color="var(--ink)" />
+              </button>
+              <input ref={fileInputRef} type="file" accept="image/jpeg" onChange={handleAvatarChange} style={{ display: 'none' }} />
             </div>
+
+            {avatarError && <p style={{ color: 'var(--feedback-wrong-text)', fontSize: '12px', marginBottom: '10px' }}>{avatarError}</p>}
+
+            <h1 className="font-display text-xl" style={{ color: 'var(--indigo)', marginBottom: '2px' }}>{displayName}</h1>
+            {bio && <p style={{ color: 'var(--text-muted)', fontSize: '13.5px', marginBottom: '14px' }}>{bio}</p>}
+
             <button
-              onClick={handleComplete}
-              disabled={doneToday}
-              style={{
-                padding: '10px 20px',
-                background: doneToday ? 'var(--border)' : 'var(--marigold)',
-                color: 'var(--ink)',
-                border: 'none',
-                cursor: doneToday ? 'not-allowed' : 'pointer',
-              }}
+              onClick={() => setSettingsOpen(true)}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: 'var(--indigo)', background: 'none', border: '1px solid var(--border)', padding: '8px 14px', cursor: 'pointer', marginBottom: '16px', width: '100%', justifyContent: 'center' }}
             >
-              {doneToday ? "Today's quiz done" : "Complete today's quiz"}
+              <Settings size={14} /> Edit profile
             </button>
-          </div>
 
-          <StreakHeatmap completedDates={completedDates} />
-        </div>
-
-        <div style={{ marginBottom: '24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-            <Award size={18} color="var(--indigo)" />
-            <h2 className="font-display text-lg" style={{ color: 'var(--indigo)' }}>Badges</h2>
-          </div>
-          {badges.length === 0 ? (
-            <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>No badges yet — a 3-day streak earns your first one.</p>
-          ) : (
-            <div className="flex flex-wrap gap-2">
-              {badges.map((b) => (
-                <span key={b} style={{ border: '1px solid var(--marigold)', padding: '6px 12px', fontSize: '13px', color: 'var(--indigo)' }}>
-                  {b}
+            <div className="flex flex-col gap-2" style={{ marginBottom: '14px' }}>
+              {showCity && city && (
+                <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: 'var(--text-muted)' }}>
+                  <MapPin size={14} /> {city}
                 </span>
+              )}
+              {showEmail && contactEmail && (
+                <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: 'var(--text-muted)' }}>
+                  <Mail size={14} /> {contactEmail}
+                </span>
+              )}
+              {joinedAt && (
+                <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: 'var(--text-muted)' }}>
+                  <Calendar size={14} /> Joined {joinedAt}
+                </span>
+              )}
+            </div>
+
+            <p style={{ fontSize: '12px', color: onLeaderboard ? 'var(--leaf)' : 'var(--text-muted)' }}>
+              {onLeaderboard ? '● On the leaderboard' : '○ Not on leaderboard'}
+            </p>
+          </aside>
+
+          <div className="profile-main">
+            <ExamsPanel userId={userId!} chosenExams={chosenExams} onChange={setChosenExams} />
+
+            <div style={{ marginBottom: '24px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap', gap: '8px' }}>
+                <h2 className="font-display text-lg" style={{ color: 'var(--indigo)' }}>{streak} day streak</h2>
+                {doneToday ? (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: 'var(--leaf)', fontWeight: 600 }}>
+                    <CheckCircle2 size={16} /> Today&apos;s quiz done
+                  </span>
+                ) : chosenExams.length === 0 ? (
+                  <span style={{ fontSize: '12.5px', color: 'var(--text-muted)' }}>Pick an exam to start today&apos;s streak</span>
+                ) : (
+                  <div className="flex gap-2 flex-wrap">
+                    {chosenExams.slice(0, 3).map((id) => {
+                      const exam = exams.find((e) => e.id === id);
+                      return (
+                        <Link
+                          key={id}
+                          href={`/exams/${id}/quiz`}
+                          style={{ fontSize: '12.5px', padding: '6px 12px', background: 'var(--marigold)', color: 'var(--ink)', textDecoration: 'none', fontWeight: 600 }}
+                        >
+                          Quiz: {exam?.name ?? id}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+              <StreakHeatmap completedDates={completedDates} />
+            </div>
+
+            <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', marginBottom: '24px' }}>
+              {[
+                { label: 'Quizzes', value: totalQuizzes },
+                { label: 'Mock tests', value: totalMocks },
+                { label: 'Forum posts', value: forumPosts },
+                { label: 'Resources', value: resourcesShared },
+              ].map((stat) => (
+                <div key={stat.label} style={{ border: '1px solid var(--border)', padding: '12px', textAlign: 'center' }}>
+                  <p className="font-display" style={{ fontSize: '20px', color: 'var(--indigo)' }}>{stat.value}</p>
+                  <p style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{stat.label}</p>
+                </div>
               ))}
             </div>
-          )}
-        </div>
 
-        {userId && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'var(--text-muted)' }}>
-            <Share2 size={14} />
-            <code style={{ background: 'var(--surface)', border: '1px solid var(--border)', padding: '2px 6px', wordBreak: 'break-all', fontSize: '12px' }}>
-              /profile/{userId}
-            </code>
+            <div>
+              <h2 className="font-display text-lg mb-3" style={{ color: 'var(--indigo)' }}>Badges</h2>
+              <EarnedBadges stats={{ streak, totalQuizzes, totalMocks, forumPosts, resourcesShared }} />
+            </div>
           </div>
-        )}
+        </div>
       </main>
 
       {settingsOpen && userId && (
         <SettingsModal
           userId={userId}
-          initial={{ displayName, bio, city, contactEmail, showCity, showEmail, onLeaderboard, chosenExams }}
+          initial={{ displayName, bio, city, contactEmail, showCity, showEmail, onLeaderboard }}
           onClose={() => setSettingsOpen(false)}
           onSaved={(updates) => {
             if (updates.displayName !== undefined) setDisplayName(updates.displayName);
@@ -271,18 +240,12 @@ setLoading(false);
             if (updates.showCity !== undefined) setShowCity(updates.showCity);
             if (updates.showEmail !== undefined) setShowEmail(updates.showEmail);
             if (updates.onLeaderboard !== undefined) setOnLeaderboard(updates.onLeaderboard);
-            if (updates.chosenExams !== undefined) setChosenExams(updates.chosenExams);
           }}
         />
       )}
 
       {bannerPickerOpen && userId && (
-        <BannerPicker
-          userId={userId}
-          current={bannerId}
-          onClose={() => setBannerPickerOpen(false)}
-          onSelect={setBannerId}
-        />
+        <BannerPicker userId={userId} current={bannerId} onClose={() => setBannerPickerOpen(false)} onSelect={setBannerId} />
       )}
     </div>
   );

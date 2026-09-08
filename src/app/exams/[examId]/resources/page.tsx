@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { incrementStat } from '@/lib/incrementStat';
 import LoginGate from '@/components/LoginGate';
 
 type Resource = {
@@ -92,6 +93,7 @@ function ResourcesContent() {
     setTitle('');
     setLink('');
     loadResources();
+    await incrementStat(userId, 'resources_shared_count');
   }
 
   return (

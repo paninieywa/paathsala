@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { Plus } from 'lucide-react';
 import { exams } from '@/data/exams';
 import { examMeta } from '@/data/examMeta';
 import { supabase } from '@/lib/supabase';
@@ -43,19 +44,18 @@ export default function ExamSelector({
     load();
   }, [onChange]);
 
-  async function toggle(id: string) {
-  if (selected.includes(id)) return; // removal now happens only in Profile → Settings
+  async function addExam(id: string) {
+    if (selected.includes(id)) return;
+    const updated = [...selected, id];
+    setSelected(updated);
+    onChange?.(updated);
 
-  const updated = [...selected, id];
-  setSelected(updated);
-  onChange?.(updated);
-
-  if (userId) {
-    await supabase.from('profiles').update({ chosen_exams: updated }).eq('id', userId);
-  } else {
-    localStorage.setItem(LOCAL_KEY, JSON.stringify(updated));
+    if (userId) {
+      await supabase.from('profiles').update({ chosen_exams: updated }).eq('id', userId);
+    } else {
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(updated));
+    }
   }
-}
 
   return (
     <div>
@@ -74,28 +74,15 @@ export default function ExamSelector({
           return (
             <div
               key={exam.id}
-              onClick={() => toggle(exam.id)}
               style={{
                 border: `1px solid ${isSelected ? 'var(--marigold)' : 'var(--border)'}`,
                 borderTop: isSelected ? '3px solid var(--marigold)' : '1px solid var(--border)',
                 padding: '20px',
-                cursor: 'pointer',
-                background: isSelected ? 'var(--surface)' : 'var(--surface)',
-                opacity: isSelected ? 1 : 0.9,
-                transition: 'border-color 0.15s ease',
+                background: 'var(--surface)',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                <div
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    background: 'var(--hero-bg)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
+                <div style={{ width: '40px', height: '40px', background: 'var(--hero-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {Icon && <Icon size={20} color="var(--marigold)" />}
                 </div>
                 {isSelected && (
@@ -111,27 +98,44 @@ export default function ExamSelector({
               <p style={{ fontSize: '11px', color: 'var(--marigold)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '8px' }}>
                 {exam.category}
               </p>
-              <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: isSelected ? '12px' : 0 }}>
+              <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '14px' }}>
                 {meta?.description}
               </p>
 
-              {isSelected && (
-  <Link
-    href={`/exams/${exam.id}`}
-    onClick={(e) => e.stopPropagation()}
-    style={{
-      display: 'inline-block',
-      fontSize: '13px',
-      fontWeight: 600,
-      color: 'var(--hero-text)',
-      background: 'var(--hero-bg)',
-      padding: '8px 16px',
-      textDecoration: 'none',
-    }}
-  >
-    Start learning →
-  </Link>
-)}
+              {isSelected ? (
+                <Link
+                  href={`/exams/${exam.id}`}
+                  style={{
+                    display: 'inline-block',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    color: 'var(--hero-text)',
+                    background: 'var(--hero-bg)',
+                    padding: '8px 16px',
+                    textDecoration: 'none',
+                  }}
+                >
+                  Start learning →
+                </Link>
+              ) : (
+                <button
+                  onClick={() => addExam(exam.id)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    color: 'var(--indigo)',
+                    background: 'none',
+                    border: '1px solid var(--indigo)',
+                    padding: '8px 16px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Plus size={14} /> Add to my exams
+                </button>
+              )}
             </div>
           );
         })}
