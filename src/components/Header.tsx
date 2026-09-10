@@ -6,12 +6,21 @@ import { supabase } from '@/lib/supabase';
 import { useLanguage } from '@/lib/LanguageContext';
 import { localeNames, Locale } from '@/lib/i18n';
 import { Moon, Sun } from 'lucide-react';
+import { LogOut } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useTheme } from '@/lib/ThemeContext';
 
 export default function Header() {
   const [userId, setUserId] = useState<string | null>(null);
   const { locale, setLocale, t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
+
+const router = useRouter();
+
+async function handleLogout() {
+  await supabase.auth.signOut();
+  router.push('/login');
+}
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -51,14 +60,23 @@ export default function Header() {
   Arena
 </Link>
         {userId ? (
-          <Link href="/profile" style={{ fontSize: '14px', color: 'var(--indigo)', textDecoration: 'none' }}>
-            {t('profile')}
-          </Link>
-        ) : (
-          <Link href="/login" style={{ fontSize: '14px', color: 'var(--indigo)', textDecoration: 'none' }}>
-            {t('login')}
-          </Link>
-        )}
+  <>
+    <Link href="/profile" style={{ fontSize: '14px', color: 'var(--indigo)', textDecoration: 'none' }}>
+      {t('profile')}
+    </Link>
+    <button
+      onClick={handleLogout}
+      style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '14px', color: 'var(--indigo)', background: 'none', border: 'none', cursor: 'pointer' }}
+      title={t('logout')}
+    >
+      <LogOut size={15} />
+    </button>
+  </>
+) : (
+  <Link href="/login" style={{ fontSize: '14px', color: 'var(--indigo)', textDecoration: 'none' }}>
+    {t('login')}
+  </Link>
+)}
                 <select
           value={locale}
           onChange={(e) => setLocale(e.target.value as Locale)}

@@ -10,6 +10,7 @@ import { Copy } from 'lucide-react';
 
 type Match = {
   id: string;
+  room_code: string;
   topic: string;
   status: string;
   questions: ArenaQuestion[];
@@ -82,11 +83,6 @@ export default function ArenaMatchPage() {
     }, 700);
   }
 
-  function copyLink() {
-    navigator.clipboard.writeText(window.location.href);
-    alert('Link copied — share it with your opponent!');
-  }
-
   if (loading) return <main style={{ padding: '48px' }}>Loading...</main>;
   if (!match) return <main style={{ padding: '48px' }}>Match not found.</main>;
   if (!userId) return <main style={{ padding: '48px' }}>Log in to join this challenge.</main>;
@@ -96,29 +92,35 @@ export default function ArenaMatchPage() {
   const isSpectator = !isPlayer1 && !isPlayer2;
 
   if (match.status === 'waiting') {
-    return (
-      <main style={{ padding: 'clamp(20px, 5vw, 48px)', maxWidth: '480px' }}>
-        <h1 className="font-display text-2xl mb-4" style={{ color: 'var(--indigo)' }}>Waiting for an opponent</h1>
-        <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '20px' }}>
-          Share this link with a friend to start the challenge.
+  return (
+    <main style={{ padding: 'clamp(20px, 5vw, 48px)', maxWidth: '480px' }}>
+      <h1 className="font-display text-2xl mb-4" style={{ color: 'var(--indigo)' }}>Waiting for an opponent</h1>
+      <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '12px' }}>
+        Give this room code to a friend so they can join:
+      </p>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+        <p className="font-display" style={{ fontSize: '36px', letterSpacing: '6px', color: 'var(--marigold)' }}>
+          {match.room_code}
         </p>
         <button
-          onClick={copyLink}
-          style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', background: 'var(--marigold)', color: 'var(--ink)', border: 'none', marginBottom: '20px' }}
+          onClick={() => navigator.clipboard.writeText(match.room_code)}
+          style={{ padding: '6px', background: 'none', border: '1px solid var(--border)', cursor: 'pointer', color: 'var(--indigo)' }}
+          title="Copy code"
         >
-          <Copy size={15} /> Copy link
+          <Copy size={15} />
         </button>
-        {isSpectator && userId && (
-          <button
-            onClick={handleJoin}
-            style={{ padding: '10px 18px', background: 'var(--indigo)', color: 'var(--paper)', border: 'none' }}
-          >
-            Join this challenge
-          </button>
-        )}
-      </main>
-    );
-  }
+      </div>
+      {isSpectator && userId && (
+        <button
+          onClick={handleJoin}
+          style={{ padding: '10px 18px', background: 'var(--indigo)', color: 'var(--paper)', border: 'none' }}
+        >
+          Join this challenge
+        </button>
+      )}
+    </main>
+  );
+}
 
   if (match.status === 'finished') {
     const won = match.winner_id === userId;

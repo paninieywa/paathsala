@@ -1,13 +1,25 @@
 import { supabase } from './supabase';
 import { getArenaQuestions, ArenaTopic } from '@/data/arenaQuestions';
 
+function generateRoomCode(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no O/0/I/1 to avoid confusion
+  let code = '';
+  for (let i = 0; i < 6; i++) {
+    code += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return code;
+}
+
 export async function createMatch(userId: string, userName: string, topic: ArenaTopic) {
   const questions = getArenaQuestions(topic, 10);
+  const roomCode = generateRoomCode();
+
   const { data, error } = await supabase
     .from('arena_matches')
     .insert({
       topic,
       questions,
+      room_code: roomCode,
       player1_id: userId,
       player1_name: userName,
     })
@@ -16,6 +28,20 @@ export async function createMatch(userId: string, userName: string, topic: Arena
 
   if (error) {
     console.error('createMatch error:', error);
+    return null;
+  }
+  return data;
+}
+
+export async function findMatchByCode(code: string) {
+  const { data, error } = await supabase
+    .from('arena_matches')
+    .select('*')
+    .eq('room_code', code.toUpperCase())
+    .single();
+
+  if (error) {
+    console.error('findMatchByCode error:', error);
     return null;
   }
   return data;
@@ -37,7 +63,13 @@ export async function joinMatch(matchId: string, userId: string, userName: strin
   return data;
 }
 
-export async function submitCorrectAnswer(matchId: string, isPlayer1: boolean, newProgress: number, totalQuestions: number, userId: string) {
+export async function submitCorrectAnswer(
+  matchId: string,
+  isPlayer1: boolean,
+  newProgress: number,
+  totalQuestions: number,
+  userId: string
+) {
   const updates: Record<string, unknown> = isPlayer1
     ? { player1_progress: newProgress }
     : { player2_progress: newProgress };

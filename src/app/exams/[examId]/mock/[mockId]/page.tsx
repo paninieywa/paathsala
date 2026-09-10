@@ -8,6 +8,7 @@ import { saveAttempt, TopicResult } from '@/lib/mockAttempts';
 import { supabase } from '@/lib/supabase';
 import { completeToday } from '@/lib/streak';
 import LoginGate from '@/components/LoginGate';
+import { useLeaveConfirm } from '@/lib/useLeaveConfirm';
 import { incrementStat } from '@/lib/incrementStat';
 import { scoreMockTest } from '@/lib/scoreMockTest';
 
@@ -31,6 +32,7 @@ function MockTestContent() {
   const [secondsLeft, setSecondsLeft] = useState((mock?.durationMins ?? 0) * 60);
   const [submitted, setSubmitted] = useState(false);
   const [result, setResult] = useState<{ score: number; breakdown: TopicResult[] } | null>(null);
+  useLeaveConfirm(!submitted && Object.keys(answers).length > 0);
 
  async function handleSubmit() {
   const answeredQuestions = questions.map((q) => ({

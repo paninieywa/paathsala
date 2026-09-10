@@ -6,6 +6,7 @@ import { getQuestions } from '@/data/questions';
 import { supabase } from '@/lib/supabase';
 import { completeToday } from '@/lib/streak';
 import Link from 'next/link';
+import { useLeaveConfirm } from '@/lib/useLeaveConfirm';
 import { incrementStat } from '@/lib/incrementStat';
 import { getDailySubset } from '@/lib/dailySubset';
 
@@ -19,6 +20,7 @@ export default function QuizPage() {
   const [score, setScore] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [finished, setFinished] = useState(false);
+  useLeaveConfirm(!finished && selected === null && index > 0);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
