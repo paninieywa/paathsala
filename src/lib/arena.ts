@@ -50,7 +50,12 @@ export async function findMatchByCode(code: string) {
 export async function joinMatch(matchId: string, userId: string, userName: string) {
   const { data, error } = await supabase
     .from('arena_matches')
-    .update({ player2_id: userId, player2_name: userName, status: 'in_progress' })
+    .update({
+      player2_id: userId,
+      player2_name: userName,
+      status: 'in_progress',
+      started_at: new Date().toISOString(),
+    })
     .eq('id', matchId)
     .eq('status', 'waiting')
     .select()
@@ -81,4 +86,31 @@ export async function submitCorrectAnswer(
 
   const { error } = await supabase.from('arena_matches').update(updates).eq('id', matchId);
   if (error) console.error('submitCorrectAnswer error:', error);
+}
+
+export async function forfeitMatch(matchId: string, opponentId: string | null) {
+  const { error } = await supabase
+    .from('arena_matches')
+    .update({ status: 'finished', winner_id: opponentId })
+    .eq('id', matchId);
+
+  if (error) console.error('forfeitMatch error:', error);
+}
+
+export async function timeoutMatch(
+  matchId: string,
+  player1Progress: number,
+  player2Progress: number,
+  player1Id: string,
+  player2Id: string | null
+) {
+  const winnerId =
+    player1Progress === player2Progress ? null : player1Progress > player2Progress ? player1Id : player2Id;
+
+  const { error } = await supabase
+    .from('arena_matches')
+    .update({ status: 'finished', winner_id: winnerId })
+    .eq('id', matchId);
+
+  if (error) console.error('timeoutMatch error:', error);
 }
